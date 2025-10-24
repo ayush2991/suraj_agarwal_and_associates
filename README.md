@@ -2,13 +2,31 @@
 
 A modern, professional website for a Chartered Accountant firm based in Visakhapatnam, India.
 
+[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/ayush2991/suraj_agarwal_and_associates)
+
+## 🚀 Quick Deploy
+
+Click the button above to deploy your own copy to Netlify in minutes!
+
+**Or deploy manually:**
+- See `DEPLOYMENT_GUIDE.md` for detailed instructions
+- Supports GitHub Pages, Netlify, Vercel, and Cloudflare Pages
+
 ## Features
 
 ### 🎨 Design
 - Modern, professional layout with elegant typography
 - Responsive design that works on all devices (desktop, tablet, mobile)
 - Smooth animations and transitions
-- Professional color scheme (navy blue, gold accents)
+- Contemporary color scheme (slate, blue, cyan accents)
+
+### 🤖 AI Chat Assistant
+- **Interactive AI chatbot** for instant answers to tax and CA queries
+- Supports Google Gemini and OpenAI APIs
+- 24/7 automated responses to common questions
+- Smart suggestion chips for quick questions
+- Fully customizable system prompts
+- See `CHAT_SETUP.md` for configuration instructions
 
 ### 📱 Sections
 1. **Hero Section** - Eye-catching landing with clear call-to-action
@@ -52,6 +70,25 @@ npx serve
 
 Then open `http://localhost:8000` in your browser.
 
+## AI Chat Setup
+
+To enable the AI chat assistant:
+
+1. **Choose your AI provider**: Google Gemini (free tier) or OpenAI
+2. **Get an API key**:
+   - Gemini: https://makersuite.google.com/app/apikey
+   - OpenAI: https://platform.openai.com/api-keys
+3. **Add your API key** to `chat.js`:
+   ```javascript
+   apiKeys: {
+       gemini: 'YOUR_API_KEY_HERE',
+       openai: ''
+   }
+   ```
+4. **Refresh the page** - The chat button will appear in the bottom-right
+
+📖 See `CHAT_SETUP.md` for detailed configuration instructions.
+
 ## Customization
 
 ### Update Contact Information
@@ -94,7 +131,10 @@ suraj_agarwal_and_associates/
 ├── index.html          # Main HTML file
 ├── styles.css          # All styling and responsive design
 ├── script.js           # Interactive functionality
-└── README.md           # This file
+├── chat.js             # AI chat widget logic
+├── chat.css            # Chat widget styling
+├── README.md           # Main documentation
+└── CHAT_SETUP.md       # AI chat setup guide
 ```
 
 ## Browser Compatibility

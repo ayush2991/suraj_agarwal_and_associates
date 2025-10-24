@@ -1,0 +1,24 @@
+# API keys and sensitive information
+chat.config.js
+
+# Optional: ignore all config files except examples
+*.config.js
+!*.config.example.js
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+npm-debug.log*
+
+# Dependencies (if you add them later)
+node_modules/
