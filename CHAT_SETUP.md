@@ -2,7 +2,7 @@
 
 ## 🤖 Overview
 
-A modern AI-powered chat widget has been added to your website to answer client questions about taxation, GST, audits, and CA services. The widget supports both **Google Gemini** and **OpenAI** APIs.
+The AI chat widget is powered via a unified serverless function (Netlify Functions). Your API key is stored as an environment variable on the server, not in the browser. This is more secure and works the same on localhost and production.
 
 ## 📁 Files Added
 
@@ -12,67 +12,31 @@ A modern AI-powered chat widget has been added to your website to answer client 
 
 ## 🚀 Quick Setup
 
-### Step 1: Choose Your AI Provider
+### Step 1: Get an API Key
 
-The chat widget supports two AI providers:
+Choose your provider and create an API key:
 
-#### Option A: Google Gemini (Recommended - Free tier available)
-1. Visit: https://makersuite.google.com/app/apikey
-2. Sign in with your Google account
-3. Click "Create API Key"
-4. Copy your API key
+- Gemini (recommended): https://makersuite.google.com/app/apikey
+- OpenAI: https://platform.openai.com/api-keys
 
-#### Option B: OpenAI (ChatGPT)
-1. Visit: https://platform.openai.com/api-keys
-2. Sign in or create an account
-3. Click "Create new secret key"
-4. Copy your API key
+### Step 2: Set Environment Variable (Production on Netlify)
 
-### Step 2: Configure the Chat Widget
+1. In Netlify → Site settings → Environment variables
+2. Add variable:
+   - Key: `GEMINI_API_KEY`
+   - Value: your API key
+3. Redeploy the site
 
-Open `chat.js` and update the configuration at the top:
+### Step 3: Local Development (Same unified path)
 
-```javascript
-const CHAT_CONFIG = {
-    // Set your provider: 'gemini' or 'openai'
-    provider: 'gemini', // or 'openai'
-    
-    // Add your API keys here
-    apiKeys: {
-        gemini: 'YOUR_GEMINI_API_KEY_HERE',
-        openai: 'YOUR_OPENAI_API_KEY_HERE'
-    },
-    
-    // ... rest of config
-};
-```
+Use the Netlify CLI so functions run locally with the same env:
 
-**Example with Gemini:**
-```javascript
-apiKeys: {
-    gemini: 'AIzaSyDxxxxxxxxxxxxxxxxxxxxxxxxxxx',
-    openai: ''
-}
-```
+1. Install CLI (once): `npm i -g netlify-cli`
+2. Set env var locally: `netlify env:set GEMINI_API_KEY <your-key>`
+3. Run locally: `netlify dev`
+4. Open the local URL and test the chat
 
-**Example with OpenAI:**
-```javascript
-const CHAT_CONFIG = {
-    provider: 'openai',
-    apiKeys: {
-        gemini: '',
-        openai: 'sk-proj-xxxxxxxxxxxxxxxxxxxxxxxxxx'
-    },
-    // ... rest
-};
-```
-
-### Step 3: Test the Chat
-
-1. Refresh your website (Ctrl+F5 or Cmd+Shift+R)
-2. Look for the blue chat button in the bottom-right corner
-3. Click it to open the chat widget
-4. Try asking: "What services do you provide?"
+The widget always calls `/.netlify/functions/chat` in both environments.
 
 ## ✨ Features
 
@@ -147,17 +111,9 @@ In `chat.css`, the chat widget uses your website's color variables:
 
 ## 🔒 Security Best Practices
 
-### Important Notes:
-1. **API Key Exposure**: The current setup exposes API keys in the browser. This is acceptable for:
-   - Development/testing
-   - Low-traffic websites
-   - Free tier usage with rate limits
-
-2. **For Production**: Consider implementing a backend proxy:
-   ```
-   Browser → Your Server → AI API
-   ```
-   This hides your API key and adds rate limiting.
+- No client-side API keys. The API key lives only as an environment variable.
+- For extra safety, restrict your Gemini key to your Netlify site domain(s) in Google’s console (HTTP referrer restrictions).
+- Do not commit keys to Git. `chat.config.js` is ignored and not required.
 
 ### Rate Limiting (Optional)
 
@@ -189,14 +145,13 @@ async handleSend() {
 - Clear browser cache and refresh
 
 ### "API key not configured" error?
-- Verify you added your API key to `chat.js`
-- Check for typos in the API key
-- Ensure provider is set correctly ('gemini' or 'openai')
+- Verify `GEMINI_API_KEY` is set in Netlify (Site settings → Environment variables)
+- If local, ensure you ran `netlify env:set GEMINI_API_KEY <key>` and are using `netlify dev`
 
 ### API errors?
-- **Gemini**: Check API key is valid at https://makersuite.google.com/
-- **OpenAI**: Verify billing is set up at https://platform.openai.com/
-- Check browser console for specific error messages
+- Gemini: Check API key is valid and referrer restrictions include your domain
+- OpenAI: Verify billing and key validity (if you swap providers)
+- Check Netlify function logs in the Netlify dashboard or terminal running `netlify dev`
 
 ### Responses are slow?
 - Normal for first request (API cold start)
@@ -212,11 +167,10 @@ The chat widget is fully responsive:
 
 ## 🎯 Next Steps
 
-1. **Add Your API Key** - Follow Step 2 above
-2. **Test Thoroughly** - Ask various questions to ensure quality
-3. **Monitor Usage** - Check your API dashboard regularly
-4. **Customize** - Adjust colors, messages, and prompts
-5. **Add Analytics** (Optional) - Track chat usage
+1. Set your environment variable in Netlify
+2. Test locally with `netlify dev`
+3. Monitor usage and errors via Netlify logs and your provider dashboard
+4. Customize prompt, UI, and suggestions in `chat.js` and `chat.css`
 
 ## 📞 Support
 

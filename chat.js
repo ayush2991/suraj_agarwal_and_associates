@@ -14,6 +14,8 @@ class ChatWidget {
         this.messages = [];
         this.isTyping = false;
         this.hasInteracted = false; // track if user initiated chat
+        // Safe config accessor with sensible defaults so production doesn't crash
+        this.CONFIG = this.getSafeConfig();
         this.init();
     }
 
@@ -21,6 +23,57 @@ class ChatWidget {
         this.createChatElements();
         this.attachEventListeners();
         this.addWelcomeMessage();
+    }
+
+    // Safely read CHAT_CONFIG if present, otherwise provide defaults
+    getSafeConfig() {
+        const globalConfig = (typeof CHAT_CONFIG !== 'undefined') 
+            ? CHAT_CONFIG 
+            : (typeof window !== 'undefined' && window.CHAT_CONFIG) || null;
+
+        const DEFAULT_SYSTEM_PROMPT = `You are a knowledgeable assistant for Suraj Agarwal & Associates, a chartered accountancy firm in Visakhapatnam, India. 
+    
+Your role is to provide helpful information about:
+- Indian taxation (Income Tax, GST, TDS)
+- Audit and compliance requirements
+- Company registration procedures
+- Basic accounting and bookkeeping queries
+- General CA services
+
+Guidelines:
+- Be professional, clear, and concise
+- Focus on Indian tax laws and regulations
+- Provide accurate information based on current Indian tax regulations
+- If asked about specific tax advice or filing, suggest booking a consultation
+- Keep responses under 150 words when possible
+- Use simple language that clients can understand
+- For complex matters, recommend speaking with a CA directly
+
+Always mention that for personalized advice, clients should contact the firm directly.`;
+
+        // Defaults mainly support production (serverless) path; local dev still needs keys
+        const defaults = {
+            provider: 'gemini',
+            apiKeys: { gemini: '', openai: '' },
+            endpoints: {
+                gemini: 'https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent',
+                openai: 'https://api.openai.com/v1/chat/completions'
+            },
+            systemPrompt: DEFAULT_SYSTEM_PROMPT
+        };
+
+        if (!globalConfig) {
+            // Don't crash if config is missing (e.g., production). Log once.
+            try { console.warn('[Chat] CHAT_CONFIG not found, using safe defaults'); } catch {}
+            return defaults;
+        }
+        // Merge shallowly so missing fields still get defaults
+        return {
+            ...defaults,
+            ...globalConfig,
+            apiKeys: { ...defaults.apiKeys, ...(globalConfig.apiKeys || {}) },
+            endpoints: { ...defaults.endpoints, ...(globalConfig.endpoints || {}) }
+        };
     }
 
     createChatElements() {
@@ -217,26 +270,8 @@ class ChatWidget {
     }
 
     async getAIResponse(userMessage) {
-        // Check if we're running on Netlify (has /.netlify/functions/ endpoint)
-        const isNetlify = window.location.hostname.includes('netlify.app') || 
-                         window.location.hostname.includes('netlify.com');
-        
-        if (isNetlify) {
-            // Use Netlify Function (secure - API key on server)
-            return await this.getNetlifyResponse(userMessage);
-        } else {
-            // Local development - use direct API calls
-            const provider = CHAT_CONFIG.provider;
-            const apiKey = CHAT_CONFIG.apiKeys[provider];
-
-            if (provider === 'gemini') {
-                return await this.getGeminiResponse(userMessage, apiKey);
-            } else if (provider === 'openai') {
-                return await this.getOpenAIResponse(userMessage, apiKey);
-            } else {
-                throw new Error('Invalid provider configured');
-            }
-        }
+        // Unified path: always use Netlify Function (works on Netlify and with `netlify dev` locally)
+        return await this.getNetlifyResponse(userMessage);
     }
 
     async getNetlifyResponse(userMessage) {
@@ -248,13 +283,27 @@ class ChatWidget {
             },
             body: JSON.stringify({
                 message: userMessage,
-                systemPrompt: CHAT_CONFIG.systemPrompt
+                // Use provided config if available, otherwise a safe default
+                systemPrompt: this.CONFIG.systemPrompt
             })
         });
 
         if (!response.ok) {
-            const error = await response.json();
-            throw new Error(error.error || 'Failed to get response');
+            // Try to parse JSON error, but handle HTML responses gracefully
+            let errorMessage = 'Failed to get response';
+            try {
+                const contentType = response.headers.get('content-type');
+                if (contentType && contentType.includes('application/json')) {
+                    const error = await response.json();
+                    errorMessage = error.error || errorMessage;
+                } else {
+                    // Got HTML or other non-JSON (likely 404 or server error page)
+                    errorMessage = `Server error (${response.status}). Make sure you're running with 'netlify dev' locally or deployed on Netlify.`;
+                }
+            } catch (e) {
+                errorMessage = `Server error (${response.status})`;
+            }
+            throw new Error(errorMessage);
         }
 
         const data = await response.json();
@@ -262,7 +311,7 @@ class ChatWidget {
     }
 
     async getGeminiResponse(userMessage, apiKey) {
-        const url = `${CHAT_CONFIG.endpoints.gemini}?key=${apiKey}`;
+        const url = `${this.CONFIG.endpoints.gemini}?key=${apiKey}`;
 
         // Helper to fetch a single chunk
         const fetchChunk = async (promptText) => {
@@ -300,7 +349,7 @@ class ChatWidget {
         let combined = '';
         let iterations = 0;
         const maxIters = 3; // safety cap to avoid runaway
-        let prompt = `${CHAT_CONFIG.systemPrompt}\n\nUser question: ${userMessage}`;
+        let prompt = `${this.CONFIG.systemPrompt}\n\nUser question: ${userMessage}`;
 
         while (iterations < maxIters) {
             const { text, finishReason } = await fetchChunk(prompt);
@@ -308,7 +357,7 @@ class ChatWidget {
 
             if (finishReason && String(finishReason).toUpperCase() === 'MAX_TOKENS') {
                 // Ask for continuation
-                prompt = `${CHAT_CONFIG.systemPrompt}\n\nThe previous answer was cut off due to token limits. Continue the answer without repeating. Original question: ${userMessage}`;
+                prompt = `${this.CONFIG.systemPrompt}\n\nThe previous answer was cut off due to token limits. Continue the answer without repeating. Original question: ${userMessage}`;
                 iterations += 1;
                 continue;
             }
@@ -319,7 +368,7 @@ class ChatWidget {
     }
 
     async getOpenAIResponse(userMessage, apiKey) {
-        const url = CHAT_CONFIG.endpoints.openai;
+        const url = this.CONFIG.endpoints.openai;
         
         const response = await fetch(url, {
             method: 'POST',
@@ -330,7 +379,7 @@ class ChatWidget {
             body: JSON.stringify({
                 model: 'gpt-3.5-turbo',
                 messages: [
-                    { role: 'system', content: CHAT_CONFIG.systemPrompt },
+                    { role: 'system', content: this.CONFIG.systemPrompt },
                     { role: 'user', content: userMessage }
                 ],
                 temperature: 0.7,

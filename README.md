@@ -72,22 +72,26 @@ Then open `http://localhost:8000` in your browser.
 
 ## AI Chat Setup
 
-To enable the AI chat assistant:
+The chat widget now uses a unified, secure serverless path via Netlify Functions. No client-side API keys are needed.
 
-1. **Choose your AI provider**: Google Gemini (free tier) or OpenAI
-2. **Get an API key**:
+1. Get your API key (provider):
    - Gemini: https://makersuite.google.com/app/apikey
    - OpenAI: https://platform.openai.com/api-keys
-3. **Add your API key** to `chat.js`:
-   ```javascript
-   apiKeys: {
-       gemini: 'YOUR_API_KEY_HERE',
-       openai: ''
-   }
-   ```
-4. **Refresh the page** - The chat button will appear in the bottom-right
+2. Set the environment variable in Netlify:
+   - In your site → Settings → Environment variables → Add variable
+   - Key: `GEMINI_API_KEY` (or your chosen provider key)
+   - Value: your API key
+3. Local development using Netlify CLI:
+   - Install: `npm i -g netlify-cli` (if not installed)
+   - Set the same env var locally: `netlify env:set GEMINI_API_KEY <your-key>`
+   - Run locally: `netlify dev` (serves site and `/.netlify/functions/chat`)
+4. Open your site and try the chat – requests are proxied through the serverless function.
 
-📖 See `CHAT_SETUP.md` for detailed configuration instructions.
+Notes:
+- `index.html` no longer includes `chat.config.js`.
+- If `chat.config.js` exists locally, it is ignored and not required.
+
+📖 See `CHAT_SETUP.md` for full instructions, security notes, and troubleshooting.
 
 ## Customization
 

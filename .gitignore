@@ -22,3 +22,6 @@ npm-debug.log*
 
 # Dependencies (if you add them later)
 node_modules/
+
+# Local Netlify folder
+.netlify

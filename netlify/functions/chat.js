@@ -23,6 +23,26 @@ exports.handler = async (event, context) => {
     try {
         // Parse the request body
         const { message, systemPrompt } = JSON.parse(event.body);
+        const DEFAULT_SYSTEM_PROMPT = `You are a knowledgeable assistant for Suraj Agarwal & Associates, a chartered accountancy firm in Visakhapatnam, India. 
+        
+Your role is to provide helpful information about:
+- Indian taxation (Income Tax, GST, TDS)
+- Audit and compliance requirements
+- Company registration procedures
+- Basic accounting and bookkeeping queries
+- General CA services
+
+Guidelines:
+- Be professional, clear, and concise
+- Focus on Indian tax laws and regulations
+- Provide accurate information based on current Indian tax regulations
+- If asked about specific tax advice or filing, suggest booking a consultation
+- Keep responses under 150 words when possible
+- Use simple language that clients can understand
+- For complex matters, recommend speaking with a CA directly
+
+Always mention that for personalized advice, clients should contact the firm directly.`;
+        const effectiveSystemPrompt = systemPrompt || DEFAULT_SYSTEM_PROMPT;
 
         // Helper to call Gemini once
         const callGemini = async (promptText) => {
@@ -62,13 +82,13 @@ exports.handler = async (event, context) => {
         let combined = '';
         let iterations = 0;
         const maxIters = 3;
-        let prompt = `${systemPrompt}\n\nUser question: ${message}`;
+    let prompt = `${effectiveSystemPrompt}\n\nUser question: ${message}`;
 
         while (iterations < maxIters) {
             const { text, finishReason } = await callGemini(prompt);
             combined += (combined ? '\n' : '') + text;
             if (finishReason && String(finishReason).toUpperCase() === 'MAX_TOKENS') {
-                prompt = `${systemPrompt}\n\nThe previous answer was cut off due to token limits. Continue the answer without repeating. Original question: ${message}`;
+                prompt = `${effectiveSystemPrompt}\n\nThe previous answer was cut off due to token limits. Continue the answer without repeating. Original question: ${message}`;
                 iterations += 1;
                 continue;
             }
