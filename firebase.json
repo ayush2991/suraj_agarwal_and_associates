@@ -56,6 +56,15 @@
   },
   "functions": {
     "source": "functions",
-    "runtime": "nodejs18"
+    "runtime": "nodejs20"
+  },
+  "emulators": {
+    "functions": {
+      "env": {
+        "GCLOUD_PROJECT": "suraj-agarwal-associates-ca",
+        "GOOGLE_CLOUD_PROJECT": "suraj-agarwal-associates-ca",
+        "NODE_NO_WARNINGS": "1"
+      }
+    }
   }
 }
