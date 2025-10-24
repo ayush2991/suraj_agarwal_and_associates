@@ -1,4 +1,4 @@
-/* Warm Theme (Amber/Coral) - Light & Dark via prefers-color-scheme
+/* Warm Theme (Amber/Coral) - Light & Dark via data-dark-mode attribute
    Scope selectors: :root.theme-warm or html[data-theme="warm"]
    Only CSS variables are overridden so base layout/styles keep working. */
 
@@ -24,27 +24,25 @@
 }
 
 /* Dark mode overrides for warm theme */
-@media (prefers-color-scheme: dark) {
-  :root.theme-warm, html[data-theme="warm"] {
-    --primary-color: #ffe7d1;
-    --primary-dark: #fff8f2;
-    --primary-light: #ffd1a6;
+:root.theme-warm[data-dark-mode="true"], html[data-theme="warm"][data-dark-mode="true"] {
+  --primary-color: #ffe7d1;
+  --primary-dark: #fff8f2;
+  --primary-light: #ffd1a6;
 
-    --secondary-color: #ff9c5e;  
-    --accent-color: #ff6785;
+  --secondary-color: #ff9c5e;  
+  --accent-color: #ff6785;
 
-    --text-dark: #fff3ea;
-    --text-light: #e0c7b7;
+  --text-dark: #fff3ea;
+  --text-light: #e0c7b7;
 
-    --bg-light: #1a120c;         /* Deep mocha */
-    --bg-white: #22160e;
-    --border-color: #3a2417;
+  --bg-light: #1a120c;         /* Deep mocha */
+  --bg-white: #22160e;
+  --border-color: #3a2417;
 
-    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35);
-    --shadow-md: 0 6px 18px rgba(0, 0, 0, 0.44);
-    --shadow-lg: 0 12px 28px rgba(0, 0, 0, 0.52);
-    --shadow-xl: 0 18px 44px rgba(0, 0, 0, 0.58);
-  }
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35);
+  --shadow-md: 0 6px 18px rgba(0, 0, 0, 0.44);
+  --shadow-lg: 0 12px 28px rgba(0, 0, 0, 0.52);
+  --shadow-xl: 0 18px 44px rgba(0, 0, 0, 0.58);
 }
 
 /* Accents to reinforce warm, editorial feel */
@@ -53,11 +51,9 @@ html[data-theme="warm"] .hero {
   background: linear-gradient(135deg, #fff2e8 0%, #fff8f2 60%, #ffffff 100%);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root.theme-warm .hero,
-  html[data-theme="warm"] .hero {
-    background: linear-gradient(135deg, #140c07 0%, #22160e 60%, #2b1b11 100%);
-  }
+:root.theme-warm[data-dark-mode="true"] .hero,
+html[data-theme="warm"][data-dark-mode="true"] .hero {
+  background: linear-gradient(135deg, #140c07 0%, #22160e 60%, #2b1b11 100%);
 }
 
 :root.theme-warm .why-us,
@@ -65,9 +61,7 @@ html[data-theme="warm"] .why-us {
   background: linear-gradient(135deg, #3a2417 0%, #4a2a0a 100%);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root.theme-warm .why-us,
-  html[data-theme="warm"] .why-us {
-    background: linear-gradient(135deg, #1a120c 0%, #22160e 100%);
-  }
+:root.theme-warm[data-dark-mode="true"] .why-us,
+html[data-theme="warm"][data-dark-mode="true"] .why-us {
+  background: linear-gradient(135deg, #1a120c 0%, #22160e 100%);
 }

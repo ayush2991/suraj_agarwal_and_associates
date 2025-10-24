@@ -327,12 +327,11 @@ console.log('%cWebsite designed for professional chartered accountancy services'
 // Theme Switcher (Default ↔ Cool ↔ Warm)
 // =====================
 (function () {
-    const THEME_KEY = 'site-theme'; // 'default' | 'cool' | 'warm'
+    const THEME_KEY = 'site-theme';
     const THEMES = ['default', 'cool', 'warm'];
 
     function applyTheme(theme) {
         const root = document.documentElement;
-        // Clear previous theme classes/attributes
         root.classList.remove('theme-cool', 'theme-warm');
         root.removeAttribute('data-theme');
 
@@ -345,7 +344,6 @@ console.log('%cWebsite designed for professional chartered accountancy services'
         }
         try { localStorage.setItem(THEME_KEY, theme); } catch {}
 
-        // Update button tooltip
         const btn = document.getElementById('theme-toggle');
         if (btn) {
             btn.setAttribute('aria-label', `Theme: ${theme}. Click to change.`);
@@ -365,7 +363,7 @@ console.log('%cWebsite designed for professional chartered accountancy services'
     }
 
     function createThemeToggle() {
-        if (document.getElementById('theme-toggle')) return; // idempotent
+        if (document.getElementById('theme-toggle')) return;
         const btn = document.createElement('button');
         btn.id = 'theme-toggle';
         btn.className = 'theme-toggle';
@@ -382,7 +380,6 @@ console.log('%cWebsite designed for professional chartered accountancy services'
         });
     }
 
-    // Initialize on DOM ready (independent of other DOMContentLoaded usage above)
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', () => {
             createThemeToggle();
@@ -391,5 +388,69 @@ console.log('%cWebsite designed for professional chartered accountancy services'
     } else {
         createThemeToggle();
         applyTheme(getStoredTheme());
+    }
+})();
+
+// =====================
+// Dark Mode Toggle
+// =====================
+(function () {
+    const DARK_MODE_KEY = 'site-dark-mode';
+
+    function applyDarkMode(isDark) {
+        const root = document.documentElement;
+        if (isDark) {
+            root.setAttribute('data-dark-mode', 'true');
+        } else {
+            root.removeAttribute('data-dark-mode');
+        }
+        try { localStorage.setItem(DARK_MODE_KEY, isDark ? 'true' : 'false'); } catch {}
+
+        const btn = document.getElementById('dark-mode-toggle');
+        if (btn) {
+            const icon = btn.querySelector('i');
+            if (icon) {
+                icon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+            }
+            btn.setAttribute('aria-label', isDark ? 'Switch to light mode' : 'Switch to dark mode');
+            btn.title = isDark ? 'Switch to light mode' : 'Switch to dark mode';
+        }
+    }
+
+    function getStoredDarkMode() {
+        try {
+            const stored = localStorage.getItem(DARK_MODE_KEY);
+            if (stored !== null) return stored === 'true';
+            return window.matchMedia('(prefers-color-scheme: dark)').matches;
+        } catch {
+            return false;
+        }
+    }
+
+    function createDarkModeToggle() {
+        if (document.getElementById('dark-mode-toggle')) return;
+        const btn = document.createElement('button');
+        btn.id = 'dark-mode-toggle';
+        btn.className = 'dark-mode-toggle';
+        btn.innerHTML = '<i class="fas fa-moon" aria-hidden="true"></i>';
+        btn.type = 'button';
+        btn.setAttribute('aria-label', 'Switch to dark mode');
+        btn.title = 'Switch to dark mode';
+        document.body.appendChild(btn);
+
+        btn.addEventListener('click', () => {
+            const currentDark = getStoredDarkMode();
+            applyDarkMode(!currentDark);
+        });
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => {
+            createDarkModeToggle();
+            applyDarkMode(getStoredDarkMode());
+        });
+    } else {
+        createDarkModeToggle();
+        applyDarkMode(getStoredDarkMode());
     }
 })();

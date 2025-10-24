@@ -1,4 +1,4 @@
-/* Cool Theme (Ocean/Tech) - Light & Dark via prefers-color-scheme
+/* Cool Theme (Ocean/Tech) - Light & Dark via data-dark-mode attribute
    Scope selectors: :root.theme-cool or html[data-theme="cool"]
    Only CSS variables are overridden so base layout/styles keep working. */
 
@@ -24,27 +24,25 @@
 }
 
 /* Dark mode overrides for cool theme */
-@media (prefers-color-scheme: dark) {
-  :root.theme-cool, html[data-theme="cool"] {
-    --primary-color: #dbe9ff;
-    --primary-dark: #f3f8ff;
-    --primary-light: #a7caff;
+:root.theme-cool[data-dark-mode="true"], html[data-theme="cool"][data-dark-mode="true"] {
+  --primary-color: #dbe9ff;
+  --primary-dark: #f3f8ff;
+  --primary-light: #a7caff;
 
-    --secondary-color: #58b2ff;   
-    --accent-color: #4ef2e2;
+  --secondary-color: #58b2ff;   
+  --accent-color: #4ef2e2;
 
-    --text-dark: #eaf3ff;
-    --text-light: #a9bedc;
+  --text-dark: #eaf3ff;
+  --text-light: #a9bedc;
 
-    --bg-light: #071223;          /* Night navy */
-    --bg-white: #0b172b;
-    --border-color: #163253;
+  --bg-light: #071223;          /* Night navy */
+  --bg-white: #0b172b;
+  --border-color: #163253;
 
-    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35);
-    --shadow-md: 0 6px 18px rgba(0, 0, 0, 0.45);
-    --shadow-lg: 0 12px 28px rgba(0, 0, 0, 0.55);
-    --shadow-xl: 0 18px 44px rgba(0, 0, 0, 0.6);
-  }
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35);
+  --shadow-md: 0 6px 18px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 12px 28px rgba(0, 0, 0, 0.55);
+  --shadow-xl: 0 18px 44px rgba(0, 0, 0, 0.6);
 }
 
 /* A couple of tasteful accents that lean into the cool aesthetic */
@@ -53,11 +51,9 @@ html[data-theme="cool"] .hero {
   background: linear-gradient(135deg, #eaf4ff 0%, #f7fbff 60%, #ffffff 100%);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root.theme-cool .hero,
-  html[data-theme="cool"] .hero {
-    background: linear-gradient(135deg, #050b16 0%, #0b172b 60%, #0f1f38 100%);
-  }
+:root.theme-cool[data-dark-mode="true"] .hero,
+html[data-theme="cool"][data-dark-mode="true"] .hero {
+  background: linear-gradient(135deg, #050b16 0%, #0b172b 60%, #0f1f38 100%);
 }
 
 :root.theme-cool .why-us,
@@ -65,9 +61,7 @@ html[data-theme="cool"] .why-us {
   background: linear-gradient(135deg, #0a1e36 0%, #0f2a47 100%);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root.theme-cool .why-us,
-  html[data-theme="cool"] .why-us {
-    background: linear-gradient(135deg, #071223 0%, #0b172b 100%);
-  }
+:root.theme-cool[data-dark-mode="true"] .why-us,
+html[data-theme="cool"][data-dark-mode="true"] .why-us {
+  background: linear-gradient(135deg, #071223 0%, #0b172b 100%);
 }
