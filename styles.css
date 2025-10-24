@@ -125,6 +125,25 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* =====================
+   Buttons
+   ===================== */
+    .btn,
+    .btn-primary,
+    .btn-secondary {
+        color: var(--bg-white) !important;
+        border-color: var(--secondary-color);
+    }
+    .btn-secondary {
+        background: transparent;
+        color: var(--primary-color) !important;
+        border: 2px solid var(--primary-color);
+    }
+    .btn-secondary:hover {
+        background: var(--primary-color);
+        color: var(--bg-white) !important;
+    }
+    
+    /* =====================
    Header & Navigation
    ===================== */
 .header {
@@ -1092,6 +1111,43 @@ section {
         background: rgba(255, 255, 255, 0.12);
     }
     
+    /* Fix: Section titles and headers high contrast in dark mode */
+    .section-title,
+    .section-header h2,
+    .services .section-title,
+    .why-us .section-title {
+        color: var(--primary-color) !important;
+        text-shadow: 0 2px 8px rgba(0,0,0,0.18);
+    }
+
+    .title-underline {
+        background: linear-gradient(90deg, var(--secondary-color), var(--accent-color));
+    }
+
+    /* Fix: Social icons high contrast in dark mode */
+    .social-links a {
+        background: rgba(255,255,255,0.18);
+        color: var(--primary-color);
+        border: 1px solid var(--border-color);
+    }
+    .social-links a:hover {
+        background: var(--secondary-color);
+        color: var(--bg-white);
+    }
+
+    /* Fix: Why Us card icons and text */
+    .why-us-card i {
+        color: var(--accent-color);
+        text-shadow: 0 2px 8px rgba(0,0,0,0.18);
+    }
+    .why-us-card h3 {
+        color: var(--primary-color);
+        text-shadow: 0 2px 8px rgba(0,0,0,0.18);
+    }
+    .why-us-card p {
+        color: var(--text-light);
+    }
+
     /* Contact */
     .contact-details h4 {
         color: var(--primary-color);
@@ -1135,6 +1191,17 @@ section {
     .footer-section h3,
     .footer-section h4 {
         color: var(--primary-color);
+    }
+
+    /* Fix: Footer social icons high contrast */
+    .footer .social-links a {
+        background: rgba(255,255,255,0.18);
+        color: var(--primary-color);
+        border: 1px solid var(--border-color);
+    }
+    .footer .social-links a:hover {
+        background: var(--secondary-color);
+        color: var(--bg-white);
     }
     
     /* Mobile nav menu */
