@@ -1,0 +1,73 @@
+/* Warm Theme (Amber/Coral) - Light & Dark via prefers-color-scheme
+   Scope selectors: :root.theme-warm or html[data-theme="warm"]
+   Only CSS variables are overridden so base layout/styles keep working. */
+
+:root.theme-warm, html[data-theme="warm"] {
+  /* Light mode defaults */
+  --primary-color: #4a2a0a;      /* Deep espresso */
+  --primary-dark: #2b1906;
+  --primary-light: #6a3910;
+  --secondary-color: #ff8a3d;    /* Amber orange */
+  --accent-color: #ff4d6d;       /* Coral rose */
+
+  --text-dark: #2a1a10;          /* Cocoa */
+  --text-light: #6e584b;         /* Warm taupe */
+
+  --bg-light: #fff8f2;           /* Linen */
+  --bg-white: #ffffff;
+  --border-color: #f0e0d3;       /* Sand */
+
+  --shadow-sm: 0 1px 2px rgba(74, 42, 10, 0.06);
+  --shadow-md: 0 6px 18px rgba(74, 42, 10, 0.10);
+  --shadow-lg: 0 12px 28px rgba(74, 42, 10, 0.14);
+  --shadow-xl: 0 18px 44px rgba(74, 42, 10, 0.18);
+}
+
+/* Dark mode overrides for warm theme */
+@media (prefers-color-scheme: dark) {
+  :root.theme-warm, html[data-theme="warm"] {
+    --primary-color: #ffe7d1;
+    --primary-dark: #fff8f2;
+    --primary-light: #ffd1a6;
+
+    --secondary-color: #ff9c5e;  
+    --accent-color: #ff6785;
+
+    --text-dark: #fff3ea;
+    --text-light: #e0c7b7;
+
+    --bg-light: #1a120c;         /* Deep mocha */
+    --bg-white: #22160e;
+    --border-color: #3a2417;
+
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35);
+    --shadow-md: 0 6px 18px rgba(0, 0, 0, 0.44);
+    --shadow-lg: 0 12px 28px rgba(0, 0, 0, 0.52);
+    --shadow-xl: 0 18px 44px rgba(0, 0, 0, 0.58);
+  }
+}
+
+/* Accents to reinforce warm, editorial feel */
+:root.theme-warm .hero,
+html[data-theme="warm"] .hero {
+  background: linear-gradient(135deg, #fff2e8 0%, #fff8f2 60%, #ffffff 100%);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root.theme-warm .hero,
+  html[data-theme="warm"] .hero {
+    background: linear-gradient(135deg, #140c07 0%, #22160e 60%, #2b1b11 100%);
+  }
+}
+
+:root.theme-warm .why-us,
+html[data-theme="warm"] .why-us {
+  background: linear-gradient(135deg, #3a2417 0%, #4a2a0a 100%);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root.theme-warm .why-us,
+  html[data-theme="warm"] .why-us {
+    background: linear-gradient(135deg, #1a120c 0%, #22160e 100%);
+  }
+}

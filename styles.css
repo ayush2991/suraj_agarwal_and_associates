@@ -1,3 +1,9 @@
+/* Import optional theme packs (cool and warm). These only take effect when
+    html has class/attribute: .theme-cool / [data-theme="cool"] or
+    .theme-warm / [data-theme="warm"]. */
+@import url('./theme-cool.css');
+@import url('./theme-warm.css');
+
 /* =====================
    CSS Variables & Reset
    ===================== */
@@ -1137,5 +1143,54 @@ section {
             background: rgba(15, 27, 46, 0.98);
             border-top: 1px solid var(--border-color);
         }
+    }
+}
+
+/* =====================
+   Theme Switcher Button
+   ===================== */
+.theme-toggle {
+    position: fixed;
+    left: 24px;
+    bottom: 24px;
+    width: 44px;
+    height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    border: 1px solid var(--border-color);
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
+    box-shadow: var(--shadow-md);
+    color: var(--primary-color);
+    cursor: pointer;
+    transition: var(--transition);
+    z-index: 1100; /* above header but below chat container */
+}
+
+.theme-toggle:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.theme-toggle i {
+    font-size: 1.1rem;
+}
+
+@media (prefers-color-scheme: dark) {
+    .theme-toggle {
+        background: rgba(15, 27, 46, 0.9);
+        color: var(--primary-color);
+        border-color: var(--border-color);
+    }
+}
+
+@media (max-width: 480px) {
+    .theme-toggle {
+        left: 16px;
+        bottom: 16px;
+        width: 40px;
+        height: 40px;
     }
 }

@@ -322,3 +322,74 @@ if ('loading' in HTMLImageElement.prototype) {
 // =====================
 console.log('%cSuraj Agarwal & Associates', 'color: #1a4d8f; font-size: 24px; font-weight: bold;');
 console.log('%cWebsite designed for professional chartered accountancy services', 'color: #6b7280; font-size: 14px;');
+
+// =====================
+// Theme Switcher (Default ↔ Cool ↔ Warm)
+// =====================
+(function () {
+    const THEME_KEY = 'site-theme'; // 'default' | 'cool' | 'warm'
+    const THEMES = ['default', 'cool', 'warm'];
+
+    function applyTheme(theme) {
+        const root = document.documentElement;
+        // Clear previous theme classes/attributes
+        root.classList.remove('theme-cool', 'theme-warm');
+        root.removeAttribute('data-theme');
+
+        if (theme === 'cool') {
+            root.classList.add('theme-cool');
+            root.setAttribute('data-theme', 'cool');
+        } else if (theme === 'warm') {
+            root.classList.add('theme-warm');
+            root.setAttribute('data-theme', 'warm');
+        }
+        try { localStorage.setItem(THEME_KEY, theme); } catch {}
+
+        // Update button tooltip
+        const btn = document.getElementById('theme-toggle');
+        if (btn) {
+            btn.setAttribute('aria-label', `Theme: ${theme}. Click to change.`);
+            btn.title = `Theme: ${theme}. Click to change.`;
+            btn.dataset.theme = theme;
+        }
+    }
+
+    function getStoredTheme() {
+        try { return localStorage.getItem(THEME_KEY) || 'default'; } catch { return 'default'; }
+    }
+
+    function nextTheme(current) {
+        const idx = THEMES.indexOf(current);
+        const nextIdx = (idx + 1) % THEMES.length;
+        return THEMES[nextIdx];
+    }
+
+    function createThemeToggle() {
+        if (document.getElementById('theme-toggle')) return; // idempotent
+        const btn = document.createElement('button');
+        btn.id = 'theme-toggle';
+        btn.className = 'theme-toggle';
+        btn.innerHTML = '<i class="fas fa-palette" aria-hidden="true"></i>';
+        btn.type = 'button';
+        btn.setAttribute('aria-label', 'Theme: default. Click to change.');
+        btn.title = 'Theme: default. Click to change.';
+        document.body.appendChild(btn);
+
+        btn.addEventListener('click', () => {
+            const current = getStoredTheme();
+            const nxt = nextTheme(current);
+            applyTheme(nxt);
+        });
+    }
+
+    // Initialize on DOM ready (independent of other DOMContentLoaded usage above)
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => {
+            createThemeToggle();
+            applyTheme(getStoredTheme());
+        });
+    } else {
+        createThemeToggle();
+        applyTheme(getStoredTheme());
+    }
+})();

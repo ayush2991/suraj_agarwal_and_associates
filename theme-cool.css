@@ -1,0 +1,73 @@
+/* Cool Theme (Ocean/Tech) - Light & Dark via prefers-color-scheme
+   Scope selectors: :root.theme-cool or html[data-theme="cool"]
+   Only CSS variables are overridden so base layout/styles keep working. */
+
+:root.theme-cool, html[data-theme="cool"] {
+  /* Light mode defaults */
+  --primary-color: #0e2a47;      /* Deep navy */
+  --primary-dark: #081a2d;
+  --primary-light: #11375e;      
+  --secondary-color: #2ea0ff;    /* Azure */
+  --accent-color: #00e6d2;       /* Aqua */
+
+  --text-dark: #0b1220;          /* Ink */
+  --text-light: #495a74;         /* Slate */
+
+  --bg-light: #f3f8ff;           /* Mist blue */
+  --bg-white: #ffffff;
+  --border-color: #d9e6f7;       /* Soft blue border */
+
+  --shadow-sm: 0 1px 2px rgba(8, 26, 45, 0.06);
+  --shadow-md: 0 6px 18px rgba(8, 26, 45, 0.10);
+  --shadow-lg: 0 12px 28px rgba(8, 26, 45, 0.14);
+  --shadow-xl: 0 18px 44px rgba(8, 26, 45, 0.18);
+}
+
+/* Dark mode overrides for cool theme */
+@media (prefers-color-scheme: dark) {
+  :root.theme-cool, html[data-theme="cool"] {
+    --primary-color: #dbe9ff;
+    --primary-dark: #f3f8ff;
+    --primary-light: #a7caff;
+
+    --secondary-color: #58b2ff;   
+    --accent-color: #4ef2e2;
+
+    --text-dark: #eaf3ff;
+    --text-light: #a9bedc;
+
+    --bg-light: #071223;          /* Night navy */
+    --bg-white: #0b172b;
+    --border-color: #163253;
+
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35);
+    --shadow-md: 0 6px 18px rgba(0, 0, 0, 0.45);
+    --shadow-lg: 0 12px 28px rgba(0, 0, 0, 0.55);
+    --shadow-xl: 0 18px 44px rgba(0, 0, 0, 0.6);
+  }
+}
+
+/* A couple of tasteful accents that lean into the cool aesthetic */
+:root.theme-cool .hero,
+html[data-theme="cool"] .hero {
+  background: linear-gradient(135deg, #eaf4ff 0%, #f7fbff 60%, #ffffff 100%);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root.theme-cool .hero,
+  html[data-theme="cool"] .hero {
+    background: linear-gradient(135deg, #050b16 0%, #0b172b 60%, #0f1f38 100%);
+  }
+}
+
+:root.theme-cool .why-us,
+html[data-theme="cool"] .why-us {
+  background: linear-gradient(135deg, #0a1e36 0%, #0f2a47 100%);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root.theme-cool .why-us,
+  html[data-theme="cool"] .why-us {
+    background: linear-gradient(135deg, #071223 0%, #0b172b 100%);
+  }
+}
