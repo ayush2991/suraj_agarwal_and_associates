@@ -1,186 +1,56 @@
-# Suraj Agarwal & Associates - Chartered Accountants Website
+# Suraj Agarwal & Associates
 
-A modern, professional website for a Chartered Accountant firm based in Visakhapatnam, India.
-
-[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/ayush2991/suraj_agarwal_and_associates)
-
-## 🚀 Quick Deploy
-
-Click the button above to deploy your own copy to Netlify in minutes!
-
-**Or deploy manually:**
-- See `DEPLOYMENT_GUIDE.md` for detailed instructions
-- Supports GitHub Pages, Netlify, Vercel, and Cloudflare Pages
+Professional website for a Chartered Accountant firm in Visakhapatnam, India.
 
 ## Features
 
-### 🎨 Design
-- Modern, professional layout with elegant typography
-- Responsive design that works on all devices (desktop, tablet, mobile)
-- Smooth animations and transitions
-- Contemporary color scheme (slate, blue, cyan accents)
+- Modern, responsive design
+- AI chat assistant (Gemini API via Netlify Functions)
+- Contact form with validation
+- Services showcase
+- Mobile-friendly
 
-### 🤖 AI Chat Assistant
-- **Interactive AI chatbot** for instant answers to tax and CA queries
-- Supports Google Gemini and OpenAI APIs
-- 24/7 automated responses to common questions
-- Smart suggestion chips for quick questions
-- Fully customizable system prompts
-- See `CHAT_SETUP.md` for configuration instructions
+## Quick Start
 
-### 📱 Sections
-1. **Hero Section** - Eye-catching landing with clear call-to-action
-2. **About Section** - Firm introduction with stats and credentials
-3. **Services Section** - Comprehensive CA services including:
-   - Income Tax Services (ITR filing, tax planning, TDS)
-   - Audit & Assurance (statutory, internal, tax audit)
-   - GST Services (registration, filing, compliance)
-   - Company Registration (Pvt Ltd, LLP, Partnership)
-   - Business Advisory (financial planning, valuation)
-   - Accounting & Bookkeeping (MIS, payroll)
-4. **Why Choose Us** - Key differentiators and value propositions
-5. **Contact Section** - Contact form with validation and business information
-6. **Footer** - Complete navigation and contact details
-
-### ⚡ Functionality
-- Smooth scroll navigation
-- Mobile-friendly hamburger menu
-- Form validation with error messages
-- Animated statistics counter
-- Scroll-triggered animations
-- Active navigation highlighting
-
-## How to Use
-
-### Option 1: Open Directly
-Simply double-click on `index.html` to open the website in your default browser.
-
-### Option 2: Use a Local Server
-For best results, use a local development server:
+### Local Development
 
 ```bash
-# If you have Python installed:
-python -m http.server 8000
+# Install Netlify CLI
+npm i -g netlify-cli
 
-# Or if you have Node.js with npx:
-npx serve
+# Set API key
+netlify env:set GEMINI_API_KEY your_api_key_here
 
-# Or use VS Code's Live Server extension
+# Run locally
+netlify dev
 ```
 
-Then open `http://localhost:8000` in your browser.
+Get Gemini API key: https://makersuite.google.com/app/apikey
 
-## AI Chat Setup
+### Deploy to Netlify
 
-The chat widget now uses a unified, secure serverless path via Netlify Functions. No client-side API keys are needed.
+1. Push to GitHub
+2. Import project at https://app.netlify.com/
+3. Add environment variable: `GEMINI_API_KEY`
+4. Deploy
 
-1. Get your API key (provider):
-   - Gemini: https://makersuite.google.com/app/apikey
-   - OpenAI: https://platform.openai.com/api-keys
-2. Set the environment variable in Netlify:
-   - In your site → Settings → Environment variables → Add variable
-   - Key: `GEMINI_API_KEY` (or your chosen provider key)
-   - Value: your API key
-3. Local development using Netlify CLI:
-   - Install: `npm i -g netlify-cli` (if not installed)
-   - Set the same env var locally: `netlify env:set GEMINI_API_KEY <your-key>`
-   - Run locally: `netlify dev` (serves site and `/.netlify/functions/chat`)
-4. Open your site and try the chat – requests are proxied through the serverless function.
-
-Notes:
-- `index.html` no longer includes `chat.config.js`.
-- If `chat.config.js` exists locally, it is ignored and not required.
-
-📖 See `CHAT_SETUP.md` for full instructions, security notes, and troubleshooting.
+See `SETUP_INSTRUCTIONS.md` for troubleshooting.
 
 ## Customization
 
-### Update Contact Information
-Edit the following in `index.html`:
-- Address (line ~413)
-- Phone numbers (line ~420)
-- Email addresses (line ~428)
-- Business hours (line ~436)
+- **Contact info**: Edit `index.html` contact section
+- **Colors**: Edit CSS variables in `styles.css`
+- **Services**: Modify services section in `index.html`
+- **Chat prompt**: Edit system prompt in `netlify/functions/chat.js`
 
-### Update Firm Name
-Replace "Suraj Agarwal & Associates" throughout the HTML file with your firm name.
-
-### Add Your Logo
-Replace the icon in the navigation with your logo image:
-```html
-<!-- Current -->
-<i class="fas fa-balance-scale"></i>
-
-<!-- Replace with -->
-<img src="your-logo.png" alt="Company Logo">
-```
-
-### Modify Colors
-Edit CSS variables in `styles.css` (lines 5-15):
-```css
-:root {
-    --primary-color: #1a4d8f;  /* Main navy blue */
-    --secondary-color: #d4af37; /* Gold accent */
-    /* ... other colors */
-}
-```
-
-### Update Services
-Modify the services section in `index.html` (lines ~160-280) to add/remove services.
-
-## File Structure
+## Files
 
 ```
-suraj_agarwal_and_associates/
-├── index.html          # Main HTML file
-├── styles.css          # All styling and responsive design
-├── script.js           # Interactive functionality
-├── chat.js             # AI chat widget logic
-├── chat.css            # Chat widget styling
-├── README.md           # Main documentation
-└── CHAT_SETUP.md       # AI chat setup guide
+index.html          # Main page
+styles.css          # Styling
+script.js           # Site interactions
+chat.js             # Chat widget
+chat.css            # Chat styling
+netlify/functions/  # Serverless function
+netlify.toml        # Netlify config
 ```
-
-## Browser Compatibility
-
-- Chrome (recommended)
-- Firefox
-- Safari
-- Edge
-- Mobile browsers (iOS Safari, Chrome Mobile)
-
-## Dependencies
-
-The website uses CDN-hosted libraries:
-- Google Fonts (Inter & Playfair Display)
-- Font Awesome 6.4.0 (icons)
-
-No installation required!
-
-## SEO Ready
-
-The website includes:
-- Meta descriptions
-- Semantic HTML5
-- Proper heading hierarchy
-- Descriptive alt texts for accessibility
-- Mobile-friendly viewport settings
-
-## Future Enhancements
-
-Consider adding:
-- Client testimonials section
-- Blog/Articles section
-- Gallery of office/team photos
-- Online appointment booking
-- WhatsApp integration
-- Google Maps integration
-- Multi-language support (Telugu/Hindi)
-
-## Support
-
-For any customization help or questions, refer to the inline comments in the HTML, CSS, and JavaScript files.
-
----
-
-**Built with ❤️ for excellence in professional service**

@@ -1,81 +1,57 @@
-# Quick Setup Guide
+# Setup Instructions
 
-## The Problem You Just Hit
+## The Problem
 
-You got: `SyntaxError: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
+Opening `index.html` directly causes: `SyntaxError: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`
 
-**What happened:** The chat widget is trying to call `/.netlify/functions/chat`, but that function only exists when you run with Netlify CLI or deploy to Netlify. Opening `index.html` directly in a browser tries to fetch from a non-existent endpoint, so it gets a 404 HTML page instead of JSON.
+**Why:** The chat needs `/.netlify/functions/chat` which only exists when running with Netlify CLI or deployed on Netlify.
 
-## Solution: Run with Netlify CLI
+## Solution
 
-### Step 1: Install Netlify CLI (one time)
+### Local Development
 
 ```bash
+# 1. Install Netlify CLI (one time)
 npm install -g netlify-cli
-```
 
-### Step 2: Set Your API Key
+# 2. Set API key
+netlify env:set GEMINI_API_KEY your_api_key_here
 
-Get your Gemini API key from: https://makersuite.google.com/app/apikey
-
-Then set it locally:
-
-```bash
-netlify env:set GEMINI_API_KEY your_actual_api_key_here
-```
-
-### Step 3: Run the Site
-
-```bash
-cd /Users/aayushagarwal/projects/suraj_agarwal_and_associates
+# 3. Run dev server
 netlify dev
+
+# 4. Open http://localhost:8888 (or URL shown in terminal)
 ```
 
-This will:
-- Start a local server (usually at http://localhost:8888)
-- Serve the Netlify Function at `/.netlify/functions/chat`
-- Use your environment variable for the API key
+Get API key: https://makersuite.google.com/app/apikey
 
-### Step 4: Open and Test
+### Deploy to Production
 
-1. Open the URL from the terminal (e.g., http://localhost:8888)
-2. Click the chat button
-3. Send a message
-4. It should work! ✅
+```bash
+# 1. Push to GitHub
+git add .
+git commit -m "Deploy site"
+git push origin main
+
+# 2. Deploy on Netlify
+# - Go to https://app.netlify.com/
+# - Import your GitHub repo
+# - Add environment variable: GEMINI_API_KEY
+# - Deploy
+```
 
 ## Alternative: Disable Chat Locally
 
-If you just want to view the site without chat functionality:
+To view the site without chat:
 
-1. Open `index.html`
-2. Comment out the chat script:
+1. Comment out chat script in `index.html`:
    ```html
    <!-- <script src="chat.js?v=20251024"></script> -->
    ```
-3. Open `index.html` directly in your browser
+2. Open `index.html` directly in browser
 
-## Deploy to Netlify (Production)
+## Troubleshooting
 
-1. Push to GitHub:
-   ```bash
-   git add .
-   git commit -m "Update chat to serverless"
-   git push origin main
-   ```
-
-2. Go to https://app.netlify.com/
-3. Click "Add new site" → Import from Git
-4. Connect your GitHub repo
-5. In Site settings → Environment variables:
-   - Add `GEMINI_API_KEY` with your key
-6. Deploy!
-
-Your site will be live at `https://your-site.netlify.app`
-
-## Summary
-
-- **Local dev**: Use `netlify dev` (requires Netlify CLI)
-- **Production**: Deploy to Netlify with `GEMINI_API_KEY` environment variable
-- **API key**: Never in code, always in environment variables
-
-See `CHAT_SETUP.md` for more details.
+- **404 on functions**: Make sure you're using `netlify dev`, not opening HTML directly
+- **API errors**: Check `GEMINI_API_KEY` is set correctly
+- **Chat not working**: Check browser console (F12) for errors
