@@ -9,6 +9,8 @@
   --primary-light: #6a3910;
   --secondary-color: #ff8a3d;    /* Amber orange */
   --accent-color: #ff4d6d;       /* Coral rose */
+  --secondary-hover: #ffb36a;    /* Lighter amber for hover */
+  --accent-hover: #ff7a8c;       /* Lighter coral for hover */
 
   --text-dark: #2a1a10;          /* Cocoa */
   --text-light: #6e584b;         /* Warm taupe */
@@ -32,6 +34,8 @@
 
     --secondary-color: #ff9c5e;  
     --accent-color: #ff6785;
+    --secondary-hover: #ffb36a;
+    --accent-hover: #ff8fa3;
 
     --text-dark: #fff3ea;
     --text-light: #e0c7b7;

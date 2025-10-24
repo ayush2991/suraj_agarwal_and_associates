@@ -9,6 +9,8 @@
   --primary-light: #11375e;      
   --secondary-color: #2ea0ff;    /* Azure */
   --accent-color: #00e6d2;       /* Aqua */
+  --secondary-hover: #5ac8fa;    /* Lighter azure for hover */
+  --accent-hover: #3fffe0;       /* Lighter aqua for hover */
 
   --text-dark: #0b1220;          /* Ink */
   --text-light: #495a74;         /* Slate */
@@ -32,6 +34,8 @@
 
     --secondary-color: #58b2ff;   
     --accent-color: #4ef2e2;
+    --secondary-hover: #7ad3ff;
+    --accent-hover: #7fffe7;
 
     --text-dark: #eaf3ff;
     --text-light: #a9bedc;
