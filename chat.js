@@ -275,8 +275,13 @@ Always mention that for personalized advice, clients should contact the firm dir
     }
 
     async getNetlifyResponse(userMessage) {
-        // Call Netlify Function instead of direct API
-        const response = await fetch('/.netlify/functions/chat', {
+        // Detect hosting environment and use appropriate endpoint
+        // Firebase uses /api/chat, Netlify uses /.netlify/functions/chat
+        const isFirebase = window.location.hostname.includes('firebaseapp.com') || 
+                          window.location.hostname.includes('web.app');
+        const endpoint = isFirebase ? '/api/chat' : '/.netlify/functions/chat';
+        
+        const response = await fetch(endpoint, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -298,7 +303,8 @@ Always mention that for personalized advice, clients should contact the firm dir
                     errorMessage = error.error || errorMessage;
                 } else {
                     // Got HTML or other non-JSON (likely 404 or server error page)
-                    errorMessage = `Server error (${response.status}). Make sure you're running with 'netlify dev' locally or deployed on Netlify.`;
+                    const platform = isFirebase ? 'Firebase' : 'Netlify';
+                    errorMessage = `Server error (${response.status}). Make sure you're running with '${isFirebase ? 'firebase serve' : 'netlify dev'}' locally or deployed on ${platform}.`;
                 }
             } catch (e) {
                 errorMessage = `Server error (${response.status})`;

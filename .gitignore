@@ -1,27 +1,107 @@
-# API keys and sensitive information
+# =====================
+# API Keys & Secrets
+# =====================
 chat.config.js
-
-# Optional: ignore all config files except examples
 *.config.js
 !*.config.example.js
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
 
-# OS files
+# =====================
+# Dependencies
+# =====================
+node_modules/
+jspm_packages/
+bower_components/
+
+# =====================
+# Build & Cache
+# =====================
+dist/
+build/
+.cache/
+.temp/
+.tmp/
+*.tsbuildinfo
+
+# =====================
+# Platform-Specific
+# =====================
+
+# Netlify
+.netlify/
+.netlify.state
+
+# Firebase
+.firebase/
+.firebaserc.local
+firebase-debug.log
+firestore-debug.log
+ui-debug.log
+pubsub-debug.log
+firestore.rules.backup
+storage.rules.backup
+functions/.runtimeconfig.json
+
+# =====================
+# OS Files
+# =====================
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
 Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
 
-# Editor files
+# =====================
+# Editor Files
+# =====================
 .vscode/
+.vscode-test/
 .idea/
+*.sublime-project
+*.sublime-workspace
 *.swp
 *.swo
+*.swn
 *~
+.project
+.classpath
+.settings/
 
+# =====================
 # Logs
+# =====================
 *.log
 npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+pnpm-debug.log*
+logs/
 
-# Dependencies (if you add them later)
-node_modules/
+# =====================
+# Testing
+# =====================
+coverage/
+.nyc_output/
+*.lcov
+.grunt
+lib-cov
 
-# Local Netlify folder
-.netlify
+# =====================
+# Misc
+# =====================
+*.bak
+*.backup
+*.orig
+*.tmp
+.sass-cache/
+connect.lock
+typings/

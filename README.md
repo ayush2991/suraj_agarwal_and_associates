@@ -2,55 +2,107 @@
 
 Professional website for a Chartered Accountant firm in Visakhapatnam, India.
 
-## Features
+## ✨ Features
 
-- Modern, responsive design
-- AI chat assistant (Gemini API via Netlify Functions)
-- Contact form with validation
-- Services showcase
-- Mobile-friendly
+- 🎨 Modern, responsive design with automatic dark mode
+- 🤖 AI chat assistant powered by Google Gemini
+- 📱 Mobile-friendly and accessible
+- 🔒 Secure serverless API integration
+- ⚡ Compatible with Netlify and Firebase hosting
+- 🌙 Auto dark mode based on system preferences
 
-## Quick Start
+## 🚀 Quick Start
 
-### Local Development
+See **[DEPLOYMENT.md](./DEPLOYMENT.md)** for complete setup instructions for both Netlify and Firebase.
+
+### Local Development (Netlify)
 
 ```bash
 # Install Netlify CLI
-npm i -g netlify-cli
+npm install -g netlify-cli
 
-# Set API key
-netlify env:set GEMINI_API_KEY your_api_key_here
+# Create .env file with your API key
+echo "GEMINI_API_KEY=your-key-here" > .env
 
-# Run locally
+# Run dev server
 netlify dev
 ```
 
-Get Gemini API key: https://makersuite.google.com/app/apikey
+### Local Development (Firebase)
 
-### Deploy to Netlify
+```bash
+# Install Firebase CLI
+npm install -g firebase-tools
 
-1. Push to GitHub
-2. Import project at https://app.netlify.com/
-3. Add environment variable: `GEMINI_API_KEY`
-4. Deploy
+# Set environment variable
+export GEMINI_API_KEY="your-key-here"
 
-See `SETUP_INSTRUCTIONS.md` for troubleshooting.
+# Run emulator
+firebase serve
+```
 
-## Customization
+Get your Gemini API key: https://aistudio.google.com/app/apikey
 
-- **Contact info**: Edit `index.html` contact section
-- **Colors**: Edit CSS variables in `styles.css`
-- **Services**: Modify services section in `index.html`
-- **Chat prompt**: Edit system prompt in `netlify/functions/chat.js`
-
-## Files
+## 📦 Project Structure
 
 ```
-index.html          # Main page
-styles.css          # Styling
-script.js           # Site interactions
-chat.js             # Chat widget
-chat.css            # Chat styling
-netlify/functions/  # Serverless function
-netlify.toml        # Netlify config
+.
+├── index.html              # Main HTML
+├── styles.css              # Styles with dark mode
+├── script.js               # Site functionality
+├── chat.js                 # AI chat widget
+├── chat.css                # Chat styling
+├── netlify/
+│   └── functions/
+│       └── chat.js         # Netlify function
+├── functions/              # Firebase functions
+│   ├── index.js           # Cloud function
+│   └── package.json       # Dependencies
+├── netlify.toml           # Netlify config
+├── firebase.json          # Firebase config
+└── DEPLOYMENT.md          # Full deployment guide
 ```
+
+## 🎨 Customization
+
+### Contact Information
+Edit the contact section in `index.html`
+
+### Colors & Theme
+Modify CSS variables in `styles.css`:
+- Light mode: `:root` section
+- Dark mode: `@media (prefers-color-scheme: dark)` section
+
+### Services
+Update the services grid in `index.html`
+
+### Chat Behavior
+Edit the system prompt in:
+- Netlify: `netlify/functions/chat.js`
+- Firebase: `functions/index.js`
+
+## 🔒 Security
+
+- API keys are stored securely in environment variables
+- Never committed to version control
+- Serverless functions keep keys on the server
+- HTTPS enforced by both platforms
+
+## 📝 Environment Variables
+
+Both platforms require:
+- `GEMINI_API_KEY` - Your Google Gemini API key
+
+**Netlify**: Set in dashboard or via CLI  
+**Firebase**: Set via `firebase functions:config:set`
+
+See [DEPLOYMENT.md](./DEPLOYMENT.md) for detailed instructions.
+
+## 🆘 Support
+
+For deployment issues or questions, see the troubleshooting section in [DEPLOYMENT.md](./DEPLOYMENT.md).
+
+## 📄 License
+
+This project is for Suraj Agarwal & Associates.
+
