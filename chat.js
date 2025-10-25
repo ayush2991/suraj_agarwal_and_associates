@@ -56,7 +56,7 @@ Always mention that for personalized advice, clients should contact the firm dir
             provider: 'gemini',
             apiKeys: { gemini: '', openai: '' },
             endpoints: {
-                gemini: 'https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent',
+                gemini: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent',
                 openai: 'https://api.openai.com/v1/chat/completions'
             },
             systemPrompt: DEFAULT_SYSTEM_PROMPT
@@ -281,16 +281,23 @@ Always mention that for personalized advice, clients should contact the firm dir
                           window.location.hostname.includes('web.app');
         const endpoint = isFirebase ? '/api/chat' : '/.netlify/functions/chat';
         
+        const requestBody = {
+            message: userMessage,
+            // Use provided config if available, otherwise a safe default
+            systemPrompt: this.CONFIG.systemPrompt
+        };
+        
+        // Log the request being sent to the serverless function
+        console.log('=== CHAT CLIENT REQUEST ===');
+        console.log('Endpoint:', endpoint);
+        console.log('Request Body:', JSON.stringify(requestBody, null, 2));
+        
         const response = await fetch(endpoint, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({
-                message: userMessage,
-                // Use provided config if available, otherwise a safe default
-                systemPrompt: this.CONFIG.systemPrompt
-            })
+            body: JSON.stringify(requestBody)
         });
 
         if (!response.ok) {
@@ -300,19 +307,32 @@ Always mention that for personalized advice, clients should contact the firm dir
                 const contentType = response.headers.get('content-type');
                 if (contentType && contentType.includes('application/json')) {
                     const error = await response.json();
+                    console.error('=== CHAT CLIENT ERROR (JSON) ===');
+                    console.error(JSON.stringify(error, null, 2));
                     errorMessage = error.error || errorMessage;
                 } else {
                     // Got HTML or other non-JSON (likely 404 or server error page)
                     const platform = isFirebase ? 'Firebase' : 'Netlify';
                     errorMessage = `Server error (${response.status}). Make sure you're running with '${isFirebase ? 'firebase serve' : 'netlify dev'}' locally or deployed on ${platform}.`;
+                    console.error('=== CHAT CLIENT ERROR (Non-JSON) ===');
+                    console.error('Status:', response.status);
+                    console.error('Message:', errorMessage);
                 }
             } catch (e) {
                 errorMessage = `Server error (${response.status})`;
+                console.error('=== CHAT CLIENT ERROR (Parse Failed) ===');
+                console.error('Status:', response.status);
+                console.error('Parse error:', e);
             }
             throw new Error(errorMessage);
         }
 
         const data = await response.json();
+        
+        // Log the response received from the serverless function
+        console.log('=== CHAT CLIENT RESPONSE ===');
+        console.log(JSON.stringify(data, null, 2));
+        
         return data.response;
     }
 
@@ -321,30 +341,46 @@ Always mention that for personalized advice, clients should contact the firm dir
 
         // Helper to fetch a single chunk
         const fetchChunk = async (promptText) => {
+            const requestBody = {
+                contents: [{
+                    parts: [{
+                        text: promptText
+                    }]
+                }],
+                tools: [{
+                    google_search: {}
+                }],
+                generationConfig: {
+                    temperature: 0.7,
+                    maxOutputTokens: 2048,
+                }
+            };
+            
+            // Log the request
+            console.log('=== GEMINI API REQUEST (Direct) ===');
+            console.log(JSON.stringify(requestBody, null, 2));
+            
             const response = await fetch(url, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({
-                    contents: [{
-                        parts: [{
-                            text: promptText
-                        }]
-                    }],
-                    generationConfig: {
-                        temperature: 0.7,
-                        maxOutputTokens: 2048,
-                    }
-                })
+                body: JSON.stringify(requestBody)
             });
 
             if (!response.ok) {
                 const error = await response.json();
+                console.error('=== GEMINI API ERROR (Direct) ===');
+                console.error(JSON.stringify(error, null, 2));
                 throw new Error(error.error?.message || 'API request failed');
             }
 
             const data = await response.json();
+            
+            // Log the response
+            console.log('=== GEMINI API RESPONSE (Direct) ===');
+            console.log(JSON.stringify(data, null, 2));
+            
             const candidate = data.candidates?.[0] || {};
             const parts = candidate.content?.parts || [];
             const text = parts.map(p => p.text || '').join('').trim();
