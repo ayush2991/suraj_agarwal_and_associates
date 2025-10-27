@@ -128,12 +128,17 @@ The site will be available at `http://localhost:8888`
 
 7. **Set Environment Variables**
    ```bash
-   # Option 1: Using Firebase environment config
-   firebase functions:config:set gemini.api_key="your-gemini-api-key"
+   # For Gen 2 Cloud Functions, set environment variables via Firebase Console
+   # or use .env files for local development
    
-   # Option 2: Using .env file (for local development)
-   # Create functions/.env file:
+   # For production: Set in Firebase Console
+   # Go to: Firebase Console → Functions → Select function → Configuration
+   # Add GEMINI_API_KEY environment variable
+   
+   # For local development: Create functions/.env file
    echo "GEMINI_API_KEY=your-gemini-api-key-here" > functions/.env
+   
+   # Note: Gen 1 functions:config:set is deprecated for Gen 2 functions
    ```
 
 ### Deploy to Firebase
@@ -182,9 +187,10 @@ Both platforms require the `GEMINI_API_KEY` environment variable:
 - CLI: `netlify env:set GEMINI_API_KEY "your-key"`
 - Local: `.env` file in project root
 
-### Firebase
-- CLI: `firebase functions:config:set gemini.api_key="your-key"`
+### Firebase (Gen 2 Cloud Functions)
+- Console: Firebase Console → Functions → Configuration → Add environment variable `GEMINI_API_KEY`
 - Local: `functions/.env` file or export `GEMINI_API_KEY`
+- Note: For Gen 2 functions, use environment variables (not the deprecated `functions:config:set`)
 
 ---
 
@@ -243,8 +249,8 @@ Both platforms require the `GEMINI_API_KEY` environment variable:
 ### Chat not working on Firebase
 - Verify function is deployed: `firebase functions:list`
 - Check function logs: `firebase functions:log`
-- Ensure API key is set: `firebase functions:config:get`
-- For local dev, use `firebase serve` or `firebase emulators:start`
+- Ensure API key is set: Check Firebase Console → Functions → Configuration
+- For local dev, use `firebase serve` or `firebase emulators:start` with `GEMINI_API_KEY` env var
 
 ### 404 on function calls
 - **Netlify**: Function should be at `/.netlify/functions/chat`

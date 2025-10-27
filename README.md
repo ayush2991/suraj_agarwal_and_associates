@@ -94,7 +94,7 @@ Both platforms require:
 - `GEMINI_API_KEY` - Your Google Gemini API key
 
 **Netlify**: Set in dashboard or via CLI  
-**Firebase**: Set via `firebase functions:config:set`
+**Firebase**: Set via Firebase Console (Gen 2 functions use environment variables)
 
 See [DEPLOYMENT.md](./DEPLOYMENT.md) for detailed instructions.
 
