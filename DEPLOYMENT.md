@@ -138,7 +138,8 @@ The site will be available at `http://localhost:8888`
    # For local development: Create functions/.env file
    echo "GEMINI_API_KEY=your-gemini-api-key-here" > functions/.env
    
-   # Note: Gen 1 functions:config:set is deprecated for Gen 2 functions
+   # Note: This project uses Gen 2 Cloud Functions, which require environment variables.
+   # The Gen 1 functions:config:set command is not compatible with Gen 2 functions.
    ```
 
 ### Deploy to Firebase
