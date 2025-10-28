@@ -1,5 +1,5 @@
 // Shared Gemini API client with Google Search grounding
-// CommonJS module so it works in both Netlify and Firebase functions
+// CommonJS module for Firebase Cloud Functions
 
 const DEFAULT_SYSTEM_PROMPT = `You are a knowledgeable assistant for Suraj Agarwal & Associates, a chartered accountancy firm in Visakhapatnam, India. 
     

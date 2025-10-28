@@ -8,25 +8,12 @@ Professional website for a Chartered Accountant firm in Visakhapatnam, India.
 - 🤖 AI chat assistant powered by Google Gemini
 - 📱 Mobile-friendly and accessible
 - 🔒 Secure serverless API integration
-- ⚡ Compatible with Netlify and Firebase hosting
+- ⚡ Deployed on Firebase Hosting with Cloud Functions
 - 🌙 Auto dark mode based on system preferences
 
 ## 🚀 Quick Start
 
-See **[DEPLOYMENT.md](./DEPLOYMENT.md)** for complete setup instructions for both Netlify and Firebase.
-
-### Local Development (Netlify)
-
-```bash
-# Install Netlify CLI
-npm install -g netlify-cli
-
-# Create .env file with your API key
-echo "GEMINI_API_KEY=your-key-here" > .env
-
-# Run dev server
-netlify dev
-```
+See **[DEPLOYMENT.md](./DEPLOYMENT.md)** for complete Firebase deployment instructions.
 
 ### Local Development (Firebase)
 
@@ -52,13 +39,9 @@ Get your Gemini API key: https://aistudio.google.com/app/apikey
 ├── script.js               # Site functionality
 ├── chat.js                 # AI chat widget
 ├── chat.css                # Chat styling
-├── netlify/
-│   └── functions/
-│       └── chat.js         # Netlify function
 ├── functions/              # Firebase functions
 │   ├── index.js           # Cloud function
 │   └── package.json       # Dependencies
-├── netlify.toml           # Netlify config
 ├── firebase.json          # Firebase config
 └── DEPLOYMENT.md          # Full deployment guide
 ```
@@ -77,24 +60,23 @@ Modify CSS variables in `styles.css`:
 Update the services grid in `index.html`
 
 ### Chat Behavior
-Edit the system prompt in:
-- Netlify: `netlify/functions/chat.js`
-- Firebase: `functions/index.js`
+Edit the system prompt in `functions/index.js`
 
 ## 🔒 Security
 
 - API keys are stored securely in environment variables
 - Never committed to version control
-- Serverless functions keep keys on the server
-- HTTPS enforced by both platforms
+- Cloud Functions keep keys on the server
+- HTTPS enforced by Firebase
 
 ## 📝 Environment Variables
-
-Both platforms require:
+Requires:
 - `GEMINI_API_KEY` - Your Google Gemini API key
 
-**Netlify**: Set in dashboard or via CLI  
-**Firebase**: Set via `firebase functions:config:set`
+Set via:
+```bash
+firebase functions:config:set gemini.api_key="your-key"
+```
 
 See [DEPLOYMENT.md](./DEPLOYMENT.md) for detailed instructions.
 

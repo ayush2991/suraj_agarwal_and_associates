@@ -5,17 +5,13 @@
       "firebase.json",
       "**/.*",
       "**/node_modules/**",
-      "netlify/**",
       "functions/**",
       "README.md",
       "SETUP_INSTRUCTIONS.md",
-      "DEPLOYMENT.md"
+      "DEPLOYMENT.md",
+      "APPCHECK_SETUP.md"
     ],
     "rewrites": [
-      {
-        "source": "/.netlify/functions/chat",
-        "function": "chat"
-      },
       {
         "source": "/api/chat",
         "function": "chat"
