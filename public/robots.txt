@@ -1,0 +1,7 @@
+# robots.txt for Suraj Agarwal & Associates
+# Allow all crawlers
+User-agent: *
+Allow: /
+
+# Add your sitemap URL once the domain is finalized:
+# Sitemap: https://your-domain.example/sitemap.xml

@@ -34,16 +34,22 @@ Get your Gemini API key: https://aistudio.google.com/app/apikey
 
 ```
 .
-├── index.html              # Main HTML
-├── styles.css              # Styles with dark mode
-├── script.js               # Site functionality
-├── chat.js                 # AI chat widget
-├── chat.css                # Chat styling
+├── public/                 # Firebase Hosting site root
+│   ├── index.html          # Main HTML
+│   └── assets/
+│       ├── css/
+│       │   ├── styles.css      # Site styles with dark mode
+│       │   ├── chat.css        # Chat widget styles
+│       │   ├── theme-cool.css  # Optional cool theme
+│       │   └── theme-warm.css  # Optional warm theme
+│       └── js/
+│           ├── script.js       # Site functionality
+│           └── chat.js         # AI chat widget
 ├── functions/              # Firebase functions
-│   ├── index.js           # Cloud function
-│   └── package.json       # Dependencies
-├── firebase.json          # Firebase config
-└── DEPLOYMENT.md          # Full deployment guide
+│   ├── index.js            # Cloud function
+│   └── package.json        # Dependencies
+├── firebase.json           # Firebase config
+└── DEPLOYMENT.md           # Full deployment guide
 ```
 
 ## 🎨 Customization

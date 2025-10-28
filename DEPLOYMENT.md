@@ -32,15 +32,15 @@ This project is deployed on **Firebase Hosting** with **Cloud Functions**.
    firebase init
    ```
    
-   When prompted:
-   - Select: **Hosting** and **Functions**
-   - Choose: **Use an existing project** → Select your project
-   - For Hosting setup:
-     - Public directory: `.` (current directory)
-     - Configure as single-page app: `No`
-     - Set up automatic builds: `No`
-     - File `firebase.json` already exists: `No` (or backup first)
-   - For Functions:
+    When prompted:
+    - Select: **Hosting** and **Functions**
+    - Choose: **Use an existing project** → Select your project
+    - For Hosting setup:
+       - Public directory: `public`
+       - Configure as single-page app: `No`
+       - Set up automatic builds: `No`
+       - File `firebase.json` already exists: `Yes` (keep existing)
+    - For Functions:
      - Language: **JavaScript**
      - ESLint: Your preference
      - Install dependencies: **Yes**
@@ -122,16 +122,25 @@ The project requires the `GEMINI_API_KEY` environment variable:
 
 ```
 .
-├── index.html              # Main HTML file
-├── styles.css              # Styles with dark mode support
-├── script.js               # Main JavaScript
-├── chat.js                 # AI chat widget
-├── chat.css                # Chat widget styles
+├── public/                 # Firebase Hosting site root
+│   ├── index.html          # Main HTML
+│   └── assets/
+│       ├── css/
+│       │   ├── styles.css      # Site styles with dark mode
+│       │   ├── chat.css        # Chat widget styles
+│       │   ├── theme-cool.css  # Optional cool theme
+│       │   └── theme-warm.css  # Optional warm theme
+│       └── js/
+│           ├── script.js       # Site functionality
+│           └── chat.js         # AI chat widget
 ├── functions/              # Firebase Cloud Functions
-│   ├── index.js            # Firebase function
-│   └── package.json        # Function dependencies
+│   ├── index.js            # Cloud Function: chat
+│   ├── package.json        # Function dependencies
+│   └── lib/
+│       └── ai.js           # Gemini API client
 ├── firebase.json           # Firebase configuration
-└── .firebaserc             # Firebase project settings
+├── .firebaserc             # Firebase project settings
+└── README.md               # Overview and local dev
 ```
 
 ---
