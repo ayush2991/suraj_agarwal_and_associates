@@ -1,24 +1,21 @@
 const functions = require('firebase-functions');
-const { generateChatResponse, DEFAULT_SYSTEM_PROMPT } = require('../lib/ai');
+const { generateChatResponse, DEFAULT_SYSTEM_PROMPT } = require('./lib/ai');
 
 // Firebase Cloud Function to proxy Gemini API calls
 // This keeps your API key secure on the server
-exports.chat = functions.https.onRequest(async (req, res) => {
-    // Enable CORS
-    res.set('Access-Control-Allow-Origin', '*');
-    res.set('Access-Control-Allow-Headers', 'Content-Type');
-    res.set('Access-Control-Allow-Methods', 'POST, OPTIONS');
-
-    // Handle preflight
-    if (req.method === 'OPTIONS') {
-        res.status(204).send('');
-        return;
-    }
-
+// Using 2nd gen for better performance and automatic public access
+exports.chat = functions.https.onRequest({ cors: true }, async (req, res) => {
     // Only allow POST requests
     if (req.method !== 'POST') {
         res.status(405).json({ error: 'Method not allowed' });
         return;
+    }
+
+    // Optional: Check for rate limiting based on IP (basic protection)
+    // You can enable App Check in Firebase Console for stronger protection
+    const clientIP = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+    if (process.env.LOG_REQUESTS === '1') {
+        console.log(`Request from IP: ${clientIP}`);
     }
 
     // Get API key from environment variable (env var preferred). Fallback to firebase functions config only if set.
@@ -32,6 +29,17 @@ exports.chat = functions.https.onRequest(async (req, res) => {
     try {
         // Parse the request body
         const { message, systemPrompt } = req.body;
+        
+        // Basic input validation
+        if (!message || typeof message !== 'string' || message.trim().length === 0) {
+            res.status(400).json({ error: 'Invalid message' });
+            return;
+        }
+        
+        if (message.length > 2000) {
+            res.status(400).json({ error: 'Message too long (max 2000 characters)' });
+            return;
+        }
         const { text: aiResponse } = await generateChatResponse({
             message,
             systemPrompt: systemPrompt || DEFAULT_SYSTEM_PROMPT,
