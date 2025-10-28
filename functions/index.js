@@ -1,6 +1,11 @@
 const { onRequest } = require('firebase-functions/v2/https');
 const { defineSecret } = require('firebase-functions/params');
 const { generateChatResponse, DEFAULT_SYSTEM_PROMPT } = require('./lib/ai');
+const admin = require('firebase-admin');
+
+// Initialize Firebase Admin SDK
+admin.initializeApp();
+const db = admin.firestore();
 
 // Define secret for Gemini API key (managed via Firebase Secrets)
 const GEMINI_API_KEY = defineSecret('GEMINI_API_KEY');
@@ -49,6 +54,21 @@ exports.chat = onRequest({ cors: true, region: 'us-central1', secrets: [GEMINI_A
             apiKey,
             options: { model: 'gemini-2.5-flash' }
         });
+
+        // Log chat interaction to Firestore
+        try {
+            await db.collection('chatLogs').add({
+                ipAddress: clientIP,
+                userMessage: message,
+                aiResponse: aiResponse,
+                timestamp: admin.firestore.FieldValue.serverTimestamp(),
+                systemPrompt: systemPrompt || DEFAULT_SYSTEM_PROMPT,
+                model: 'gemini-2.5-flash'
+            });
+        } catch (logError) {
+            // Don't fail the request if logging fails
+            console.error('Failed to log chat interaction:', logError);
+        }
 
         // Return success response
         res.status(200).json({ response: aiResponse });
