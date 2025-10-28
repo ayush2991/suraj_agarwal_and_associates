@@ -17,7 +17,7 @@
         "function": "chat"
       }
     ],
-    "headers": [
+  "headers": [
       {
         "source": "**",
         "headers": [
@@ -64,6 +64,13 @@
             "value": "public, max-age=60, must-revalidate"
           }
         ]
+      }
+    ],
+    "redirects": [
+      {
+        "source": "/favicon.ico",
+        "destination": "/favicon.svg",
+        "type": 301
       }
     ]
   },

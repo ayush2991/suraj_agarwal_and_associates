@@ -61,15 +61,21 @@ This project is deployed on **Firebase Hosting** with **Cloud Functions**.
    cd ..
    ```
 
-7. **Set Environment Variables**
-   ```bash
-   # Option 1: Using Firebase environment config
-   firebase functions:config:set gemini.api_key="your-gemini-api-key"
-   
-   # Option 2: Using .env file (for local development)
-   # Create functions/.env file:
-   echo "GEMINI_API_KEY=your-gemini-api-key-here" > functions/.env
-   ```
+7. **Configure Secrets (Recommended)**
+    ```bash
+    # Store the Gemini API key in Firebase Secrets
+    firebase functions:secrets:set GEMINI_API_KEY
+    ```
+
+    Local development options:
+    - Create a local env file for the emulator (not committed):
+       ```bash
+       echo "GEMINI_API_KEY=your-gemini-api-key-here" > functions/.env
+       ```
+    - Or export in your shell before running emulators:
+       ```bash
+       export GEMINI_API_KEY=your-gemini-api-key-here
+       ```
 
 ### Deploy to Firebase
 
@@ -110,11 +116,13 @@ The site will be available at `http://localhost:5000`
 
 ## 🔧 Environment Variables
 
-The project requires the `GEMINI_API_KEY` environment variable:
+The project requires the `GEMINI_API_KEY` secret:
 
-### Firebase
-- CLI: `firebase functions:config:set gemini.api_key="your-key"`
-- Local: `functions/.env` file or export `GEMINI_API_KEY`
+### Firebase (Production/Preview)
+- Use: `firebase functions:secrets:set GEMINI_API_KEY`
+
+### Local
+- Use a `functions/.env` file or export `GEMINI_API_KEY` in your shell
 
 ---
 

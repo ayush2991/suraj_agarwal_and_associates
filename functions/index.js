@@ -1,10 +1,14 @@
-const functions = require('firebase-functions');
+const { onRequest } = require('firebase-functions/v2/https');
+const { defineSecret } = require('firebase-functions/params');
 const { generateChatResponse, DEFAULT_SYSTEM_PROMPT } = require('./lib/ai');
+
+// Define secret for Gemini API key (managed via Firebase Secrets)
+const GEMINI_API_KEY = defineSecret('GEMINI_API_KEY');
 
 // Firebase Cloud Function to proxy Gemini API calls
 // This keeps your API key secure on the server
 // Using 2nd gen for better performance and automatic public access
-exports.chat = functions.https.onRequest({ cors: true }, async (req, res) => {
+exports.chat = onRequest({ cors: true, region: 'us-central1', secrets: [GEMINI_API_KEY] }, async (req, res) => {
     // Only allow POST requests
     if (req.method !== 'POST') {
         res.status(405).json({ error: 'Method not allowed' });
@@ -18,10 +22,9 @@ exports.chat = functions.https.onRequest({ cors: true }, async (req, res) => {
         console.log(`Request from IP: ${clientIP}`);
     }
 
-    // Get API key from environment variable (env var preferred). Fallback to firebase functions config only if set.
-    const GEMINI_API_KEY = process.env.GEMINI_API_KEY || functions.config().gemini?.api_key;
-    
-    if (!GEMINI_API_KEY) {
+    // Prefer Secret Manager (defineSecret), fallback to process.env for local emulator
+    const apiKey = process.env.GEMINI_API_KEY || GEMINI_API_KEY.value();
+    if (!apiKey) {
         res.status(500).json({ error: 'API key not configured' });
         return;
     }
@@ -43,7 +46,7 @@ exports.chat = functions.https.onRequest({ cors: true }, async (req, res) => {
         const { text: aiResponse } = await generateChatResponse({
             message,
             systemPrompt: systemPrompt || DEFAULT_SYSTEM_PROMPT,
-            apiKey: GEMINI_API_KEY,
+            apiKey,
             options: { model: 'gemini-2.5-flash' }
         });
 

@@ -75,16 +75,20 @@ Edit the system prompt in `functions/index.js`
 - Cloud Functions keep keys on the server
 - HTTPS enforced by Firebase
 
-## 📝 Environment Variables
-Requires:
-- `GEMINI_API_KEY` - Your Google Gemini API key
+## 📝 Secrets / Environment
+Required secret:
+- `GEMINI_API_KEY` — your Google Gemini API key
 
-Set via:
+Set via Firebase Secrets (recommended):
 ```bash
-firebase functions:config:set gemini.api_key="your-key"
+firebase functions:secrets:set GEMINI_API_KEY
 ```
 
-See [DEPLOYMENT.md](./DEPLOYMENT.md) for detailed instructions.
+Local development options:
+- Create `functions/.env` with `GEMINI_API_KEY=...`, or
+- Export in shell before running emulators
+
+See [DEPLOYMENT.md](./DEPLOYMENT.md) for full details.
 
 ## 🆘 Support
 
