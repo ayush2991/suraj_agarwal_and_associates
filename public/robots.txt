@@ -3,5 +3,4 @@
 User-agent: *
 Allow: /
 
-# Add your sitemap URL once the domain is finalized:
-# Sitemap: https://your-domain.example/sitemap.xml
+Sitemap: https://suraj-agarwal-associates-ca.web.app/sitemap.xml
