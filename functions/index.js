@@ -1,8 +1,28 @@
 const { onRequest } = require('firebase-functions/v2/https');
 const { defineSecret } = require('firebase-functions/params');
-const { generateChatResponse, DEFAULT_SYSTEM_PROMPT } = require('./lib/ai');
+const { GoogleGenerativeAI } = require('@google/generative-ai');
 
-// Define secret for Gemini API key (managed via Firebase Secrets)
+const DEFAULT_SYSTEM_PROMPT = `You are a knowledgeable assistant for Suraj Agarwal & Associates, a chartered accountancy firm in Visakhapatnam, India. 
+    
+Your role is to provide helpful information about:
+- Indian taxation (Income Tax, GST, TDS)
+- Audit and compliance requirements
+- Company registration procedures
+- Basic accounting and bookkeeping queries
+- General CA services
+
+Guidelines:
+- Be professional, clear, and concise
+- Focus on Indian tax laws and regulations
+- Provide accurate information based on current Indian tax regulations
+- If asked about specific tax advice or filing, suggest booking a consultation
+- Keep responses under 150 words when possible
+- Use simple language that clients can understand
+- For complex matters, recommend speaking with a CA directly
+
+Always mention that for personalized advice, clients should contact the firm directly.`;
+
+
 const GEMINI_API_KEY = defineSecret('GEMINI_API_KEY');
 
 // Firebase Cloud Function to proxy Gemini API calls
@@ -43,15 +63,32 @@ exports.chat = onRequest({ cors: true, region: 'us-central1', secrets: [GEMINI_A
             res.status(400).json({ error: 'Message too long (max 2000 characters)' });
             return;
         }
-        const { text: aiResponse } = await generateChatResponse({
-            message,
-            systemPrompt: systemPrompt || DEFAULT_SYSTEM_PROMPT,
-            apiKey,
-            options: { model: 'gemini-2.5-flash' }
+
+        const genAI = new GoogleGenerativeAI(apiKey);
+        const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
+
+        const chat = model.startChat({
+            history: [
+                { role: 'user', parts: [{ text: systemPrompt || DEFAULT_SYSTEM_PROMPT }] },
+                { role: 'model', parts: [{ text: 'Okay, I understand. How can I help you today?' }] },
+            ],
+            generationConfig: {
+                temperature: 1.0,
+                maxOutputTokens: 2048,
+            },
+            tools: [
+                {
+                    googleSearch: {},
+                },
+            ],
         });
 
+        const result = await chat.sendMessage(message);
+        const aiResponse = result.response;
+        const text = aiResponse.text();
+
         // Return success response
-        res.status(200).json({ response: aiResponse });
+        res.status(200).json({ response: text });
 
     } catch (error) {
         console.error('Error:', error);
