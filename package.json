@@ -1,0 +1,12 @@
+{
+  "name": "suraj-agarwal-associates",
+  "version": "1.0.0",
+  "description": "Professional CA Website with AI Chat",
+  "private": true,
+  "scripts": {
+    "dev": "firebase emulators:start",
+    "deploy": "firebase deploy",
+    "deploy:hosting": "firebase deploy --only hosting",
+    "deploy:functions": "firebase deploy --only functions"
+  }
+}

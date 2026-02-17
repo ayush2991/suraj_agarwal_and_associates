@@ -1,0 +1,6 @@
+# robots.txt for Suraj Agarwal & Associates
+# Allow all crawlers
+User-agent: *
+Allow: /
+
+Sitemap: https://suraj-agarwal-associates-ca.web.app/sitemap.xml
