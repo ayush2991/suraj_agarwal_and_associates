@@ -31,40 +31,17 @@ class ChatWidget {
             ? CHAT_CONFIG 
             : (typeof window !== 'undefined' && window.CHAT_CONFIG) || null;
 
-        const DEFAULT_SYSTEM_PROMPT = `You are a knowledgeable assistant for Suraj Agarwal & Associates, a chartered accountancy firm in Visakhapatnam, India. 
-    
-Your role is to provide helpful information about:
-- Indian taxation (Income Tax, GST, TDS)
-- Audit and compliance requirements
-- Company registration procedures
-- Basic accounting and bookkeeping queries
-- General CA services
-
-Guidelines:
-- Be professional, clear, and concise
-- Focus on Indian tax laws and regulations
-- Provide accurate information based on current Indian tax regulations
-- If asked about specific tax advice or filing, suggest booking a consultation
-- Keep responses under 150 words when possible
-- Use simple language that clients can understand
-- For complex matters, recommend speaking with a CA directly
-
-Always mention that for personalized advice, clients should contact the firm directly.`;
-
-        // Defaults mainly support production (serverless) path; local dev still needs keys
+        // Defaults mainly support production (serverless) path
         const defaults = {
             provider: 'gemini',
             apiKeys: { gemini: '', openai: '' },
             endpoints: {
                 gemini: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent',
                 openai: 'https://api.openai.com/v1/chat/completions'
-            },
-            systemPrompt: DEFAULT_SYSTEM_PROMPT
+            }
         };
 
         if (!globalConfig) {
-            // Don't crash if config is missing (e.g., production). Log once.
-            try { console.warn('[Chat] CHAT_CONFIG not found, using safe defaults'); } catch {}
             return defaults;
         }
         // Merge shallowly so missing fields still get defaults
@@ -278,9 +255,7 @@ Always mention that for personalized advice, clients should contact the firm dir
     const endpoint = '/api/chat';
         
         const requestBody = {
-            message: userMessage,
-            // Use provided config if available, otherwise a safe default
-            systemPrompt: this.CONFIG.systemPrompt
+            message: userMessage
         };
         
         // Log the request being sent to the serverless function
