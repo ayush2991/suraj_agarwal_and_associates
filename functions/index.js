@@ -30,42 +30,28 @@ Response Guidelines:
 Grounding:
 - Use the Google Search tool to verify current tax rates, deadlines, and recent notifications if you are not 100% certain.`;
 
-
 const GEMINI_API_KEY = defineSecret('GEMINI_API_KEY');
 
-// Firebase Cloud Function to proxy Gemini API calls
-// This keeps your API key secure on the server
-// Using 2nd gen for better performance and automatic public access
+// Proxy Gemini API calls to keep key secure
 exports.chat = onRequest({ cors: true, region: 'us-central1', secrets: [GEMINI_API_KEY] }, async (req, res) => {
-    // Only allow POST requests
     if (req.method !== 'POST') {
-        res.status(405).json({ error: 'Method not allowed' });
-        return;
+        return res.status(405).json({ error: 'Method not allowed' });
     }
 
-    const clientIP = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-
-    // Prefer Secret Manager (defineSecret), fallback to process.env for local emulator
     const apiKey = process.env.GEMINI_API_KEY || GEMINI_API_KEY.value();
     if (!apiKey) {
-        res.status(500).json({ error: 'API key not configured' });
-        return;
+        return res.status(500).json({ error: 'API key not configured' });
     }
 
     try {
-        // Parse the request body
         const { message } = req.body;
-        console.log(`Question: ${message}`);
         
-        // Basic input validation
         if (!message || typeof message !== 'string' || message.trim().length === 0) {
-            res.status(400).json({ error: 'Invalid message' });
-            return;
+            return res.status(400).json({ error: 'Invalid message' });
         }
         
         if (message.length > 2000) {
-            res.status(400).json({ error: 'Message too long (max 2000 characters)' });
-            return;
+            return res.status(400).json({ error: 'Message too long' });
         }
 
         const genAI = new GoogleGenerativeAI(apiKey);
@@ -80,25 +66,15 @@ exports.chat = onRequest({ cors: true, region: 'us-central1', secrets: [GEMINI_A
                 temperature: 0.3,
                 maxOutputTokens: 2048,
             },
-            tools: [
-                {
-                    googleSearch: {},
-                },
-            ],
+            tools: [{ googleSearch: {} }],
         });
 
         const result = await chat.sendMessage(message);
-        const aiResponse = result.response;
-        const text = aiResponse.text();
-
-        // Return success response
-        res.status(200).json({ response: text });
+        res.status(200).json({ response: result.response.text() });
 
     } catch (error) {
-        console.error('Error:', error);
-        res.status(500).json({ 
-            error: error.message || 'Internal server error' 
-        });
+        console.error('Chat Error:', error);
+        res.status(500).json({ error: error.message || 'Internal server error' });
     }
 });
 
@@ -107,47 +83,33 @@ const SENDER_EMAIL = defineSecret('SENDER_EMAIL');
 
 exports.sendInquiry = onRequest({ cors: true, region: 'us-central1', secrets: [EMAIL_APP_PASSWORD, SENDER_EMAIL] }, async (req, res) => {
     if (req.method !== 'POST') {
-        res.status(405).json({ error: 'Method not allowed' });
-        return;
+        return res.status(405).json({ error: 'Method not allowed' });
     }
 
     const { name, email, phone, service, message } = req.body;
 
     if (!name || !email || !message) {
-        res.status(400).json({ error: 'Missing required fields' });
-        return;
+        return res.status(400).json({ error: 'Missing required fields' });
     }
 
     const senderEmail = process.env.SENDER_EMAIL || SENDER_EMAIL.value();
     const appPassword = process.env.EMAIL_APP_PASSWORD || EMAIL_APP_PASSWORD.value();
 
     if (!senderEmail || !appPassword) {
-        res.status(500).json({ error: 'Email configuration missing' });
-        return;
+        return res.status(500).json({ error: 'Email configuration missing' });
     }
 
     const transporter = nodemailer.createTransport({
         service: 'gmail',
-        auth: {
-            user: senderEmail,
-            pass: appPassword
-        }
+        auth: { user: senderEmail, pass: appPassword }
     });
 
     const mailOptions = {
         from: `"${name}" <${senderEmail}>`,
         to: 'ayush2991@gmail.com',
         replyTo: email,
-        subject: `New Inquiry from ${name} - ${service}`,
-        text: `
-Name: ${name}
-Email: ${email}
-Phone: ${phone}
-Service: ${service}
-
-Message:
-${message}
-        `,
+        subject: `New Inquiry - ${name} (${service})`,
+        text: `Name: ${name}\nEmail: ${email}\nPhone: ${phone}\nService: ${service}\n\nMessage:\n${message}`,
         html: `
             <h3>New Website Inquiry</h3>
             <p><strong>Name:</strong> ${name}</p>
