@@ -5,7 +5,8 @@ Professional website for a Chartered Accountant firm, featuring an AI chat assis
 ## 🚀 Development
 
 1. **Install Firebase CLI**: `npm install -g firebase-tools`
-2. **Environment Setup**:
+2. **Install Dependencies**: `npm install && cd functions && npm install && cd ..`
+3. **Environment Setup**:
    - Create `functions/.env` for local testing.
    - Set production secrets:
      ```bash
@@ -13,8 +14,9 @@ Professional website for a Chartered Accountant firm, featuring an AI chat assis
      firebase functions:secrets:set SENDER_EMAIL
      firebase functions:secrets:set EMAIL_APP_PASSWORD
      ```
-3. **Run Locally**: `firebase serve`
-4. **Deploy**: `firebase deploy`
+4. **Run Locally**: `firebase serve`
+5. **Run Tests**: `cd functions && npm test`
+6. **Deploy**: `firebase deploy`
 
 ## 📦 Structure
 
