@@ -70,7 +70,7 @@ exports.chat = onRequest({ cors: true, region: 'us-central1', secrets: [GEMINI_A
 
         const genAI = new GoogleGenerativeAI(apiKey);
         const model = genAI.getGenerativeModel({ 
-            model: 'gemini-2.5-flash',
+            model: 'gemini-3-flash-preview',
             systemInstruction: DEFAULT_SYSTEM_PROMPT
         });
 

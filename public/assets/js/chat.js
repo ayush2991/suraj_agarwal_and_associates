@@ -1,21 +1,14 @@
 // =====================
 // AI Chat Widget
 // =====================
-// Configuration is loaded from chat.config.js
-// See chat.config.template.js for setup instructions
-
-// =====================
-// Chat UI Management
-// =====================
+// Custom AI Assistant for Suraj Agarwal & Associates
 
 class ChatWidget {
     constructor() {
         this.isOpen = false;
         this.messages = [];
         this.isTyping = false;
-        this.hasInteracted = false; // track if user initiated chat
-        // Safe config accessor with sensible defaults so production doesn't crash
-        this.CONFIG = this.getSafeConfig();
+        this.hasInteracted = false; 
         this.init();
     }
 
@@ -23,34 +16,6 @@ class ChatWidget {
         this.createChatElements();
         this.attachEventListeners();
         this.addWelcomeMessage();
-    }
-
-    // Safely read CHAT_CONFIG if present, otherwise provide defaults
-    getSafeConfig() {
-        const globalConfig = (typeof CHAT_CONFIG !== 'undefined') 
-            ? CHAT_CONFIG 
-            : (typeof window !== 'undefined' && window.CHAT_CONFIG) || null;
-
-        // Defaults mainly support production (serverless) path
-        const defaults = {
-            provider: 'gemini',
-            apiKeys: { gemini: '', openai: '' },
-            endpoints: {
-                gemini: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent',
-                openai: 'https://api.openai.com/v1/chat/completions'
-            }
-        };
-
-        if (!globalConfig) {
-            return defaults;
-        }
-        // Merge shallowly so missing fields still get defaults
-        return {
-            ...defaults,
-            ...globalConfig,
-            apiKeys: { ...defaults.apiKeys, ...(globalConfig.apiKeys || {}) },
-            endpoints: { ...defaults.endpoints, ...(globalConfig.endpoints || {}) }
-        };
     }
 
     createChatElements() {
@@ -159,7 +124,6 @@ class ChatWidget {
         if (this.isOpen) {
             container.classList.add('active');
             button.classList.add('hidden');
-            // If user has interacted already, keep expanded view when reopening
             if (this.hasInteracted) {
                 container.classList.add('expanded');
             }
@@ -191,20 +155,16 @@ class ChatWidget {
         
         if (!message || this.isTyping) return;
 
-        // Note: API key is only required for local development.
-        // In production (Netlify), requests go through the serverless function and don't need a client key.
-
-        // Mark that the user has interacted and expand chat window for easier reading
         this.hasInteracted = true;
         this.expandChatWindow();
 
-        // Hide suggestions after first message
+        // Hide suggestions after first interaction
         const suggestions = document.getElementById('chat-suggestions');
-        if (suggestions && this.messages.length > 1) {
+        if (suggestions) {
             suggestions.style.display = 'none';
         }
 
-        // Add user message
+        // Add user message to UI
         const userMsg = {
             text: message,
             sender: 'user',
@@ -215,14 +175,10 @@ class ChatWidget {
         
         input.value = '';
         this.autoResize(input);
-
-        // Show typing indicator
         this.showTyping();
 
         try {
-            // Get AI response
-            const response = await this.getAIResponse(message);
-            
+            const response = await this.fetchAIResponse(message);
             this.hideTyping();
             
             const botMsg = {
@@ -246,66 +202,33 @@ class ChatWidget {
         }
     }
 
-    async getAIResponse(userMessage) {
-        return await this.getFirebaseResponse(userMessage);
-    }
-
-    async getFirebaseResponse(userMessage) {
-    // Use Firebase Cloud Function endpoint
-    const endpoint = '/api/chat';
-        
-        const requestBody = {
-            message: userMessage
-        };
-        
-        // Log the request being sent to the serverless function
-        console.log('=== CHAT CLIENT REQUEST ===');
-        console.log('Endpoint:', endpoint);
-        console.log('Request Body:', JSON.stringify(requestBody, null, 2));
+    async fetchAIResponse(userMessage) {
+        // Calls the Firebase Cloud Function proxy
+        const endpoint = '/api/chat';
         
         const response = await fetch(endpoint, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(requestBody)
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message: userMessage })
         });
 
         if (!response.ok) {
-            // Try to parse JSON error, but handle HTML responses gracefully
-            let errorMessage = 'Failed to get response';
+            let errorMessage = `Server error (${response.status})`;
             try {
                 const contentType = response.headers.get('content-type');
                 if (contentType && contentType.includes('application/json')) {
-                    const error = await response.json();
-                    console.error('=== CHAT CLIENT ERROR (JSON) ===');
-                    console.error(JSON.stringify(error, null, 2));
-                    errorMessage = error.error || errorMessage;
-                } else {
-                    // Got HTML or other non-JSON (likely 404 or server error page)
-                    errorMessage = `Server error (${response.status}). Make sure you're running with 'firebase serve' locally or deployed on Firebase.`;
-                    console.error('=== CHAT CLIENT ERROR (Non-JSON) ===');
-                    console.error('Status:', response.status);
-                    console.error('Message:', errorMessage);
+                    const errorData = await response.json();
+                    errorMessage = errorData.error || errorMessage;
                 }
             } catch (e) {
-                errorMessage = `Server error (${response.status})`;
-                console.error('=== CHAT CLIENT ERROR (Parse Failed) ===');
-                console.error('Status:', response.status);
-                console.error('Parse error:', e);
+                console.error('Error parsing response:', e);
             }
             throw new Error(errorMessage);
         }
 
         const data = await response.json();
-        
-        // Log the response received from the serverless function
-        console.log('=== CHAT CLIENT RESPONSE ===');
-        console.log(JSON.stringify(data, null, 2));
-        
         return data.response;
     }
-
 
     renderMessage(message) {
         const messagesContainer = document.getElementById('chat-messages');
@@ -331,10 +254,10 @@ class ChatWidget {
 
     formatMessage(text) {
         // Convert markdown-style formatting to HTML
-        text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-        text = text.replace(/\*(.*?)\*/g, '<em>$1</em>');
-        text = text.replace(/\n/g, '<br>');
-        return text;
+        return text
+            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+            .replace(/\*(.*?)\*/g, '<em>$1</em>')
+            .replace(/\n/g, '<br>');
     }
 
     showTyping() {
@@ -375,12 +298,8 @@ class ChatWidget {
     }
 }
 
-// =====================
-// Initialize Chat Widget
-// =====================
-
+// Initialize on load
 document.addEventListener('DOMContentLoaded', () => {
-    // Small delay to ensure all other scripts are loaded
     setTimeout(() => {
         window.chatWidget = new ChatWidget();
     }, 500);
